@@ -56,12 +56,12 @@ code: |
     qualify_kickout
   if child_born == False:
     not_yet_born
-  else:
-    if were_married == False:
-      other_marriage
+  if were_married == False:
+    other_marriage
   set_progress(20)
-  if on_certificate == True:
-    certificate_kickout
+  if child_born == False:
+    if on_certificate == True:
+      certificate_kickout
   nav.set_section('section_mother')
   mother.birth_date
   mother.address.address
@@ -183,6 +183,9 @@ code: |
         user_denial_witness.name.first
         user_denial_witness.address.address
         user_denial_witness.phone_number
+  vap_witness_outro
+  if other_marriage == True:
+    denial_witness_outro
   nav.set_section('section_download')
   set_progress(100)
   get_docs_screen
@@ -193,7 +196,7 @@ question: |
 subquestion: |
   Welcome to Illinois Legal Aid Online's **Voluntary Acknowledgement of Paternity - VAP** Easy Form.
 
-  This program helps you create documents to tell the state who a child's biological father is. The form it creates as called a VAP, which stands for "Voluntary Acknowledgement of Paternity."
+  This program helps you create documents to tell the state who a child's biological father is. The form it creates as called a Voluntary Acknowledgement of Paternity, also called a VAP.
   
    Once legal paternity is shown, the biological father will have all the rights and responsiblities of a legal parent. The father will have the right to have a relationship with the child, but he will also be responsible for supporting the child financially.
   
@@ -209,7 +212,7 @@ subquestion: |
 
   Set aside 10 to 20 minutes to finish this program. You can log in and save your work to return to later. 
 
-  After you download your form, you and the other parent will have to sign the VAP in front of witnesses. Then, you will have to file the VAP with the Illinois Department of Healthcare and Family Services.
+  After you download your form, you and the other parent will have to sign the VAP in front of witnesses. Then, you will have to file the VAP with the Illinois Department of Healthcare and Family Services (HFS).
   
   ${ collapse_template(help_example) }  
 
@@ -272,11 +275,7 @@ subquestion: |
   * The mother's husband or ex-husband's address, birth date, and birth place, and
   * The date of their marriage. 
   
-  Note: this program can only be used if both biological parents agree and can sign the forms.
-
-  If the parents do not agree, you must ask a court to establish paternity.
-  
-  Learn how to [**start a court case to establish paternity**](https://www.illinoislegalaid.org/legal-information/starting-case-parentage-court).
+  Note: this program can only be used if both biological parents agree and can sign the forms. If the parents do not agree, you must ask a court to establish paternity. Learn how to [**start a court case to establish paternity**](https://www.illinoislegalaid.org/legal-information/starting-case-parentage-court).
 ---
 id: user gender
 question: |
@@ -389,7 +388,7 @@ continue button field: not_yet_born
 question: |
   Form not valid until child is born  
 subquestion: |
-  The Voluntary Acknowledgment of Paternity (VAP) may be completed before your child is born, but is not valid until the child is born and the VAP is filed with HFS.
+  The Voluntary Acknowledgment of Paternity (VAP) may be completed before your child is born, but is not valid until the child is born and the VAP is filed with the Illinios Department of Healthcare and Family Services (HFS).
 
   You will need to add information about your child's birth and name to the VAP after they are born. Alternatively, you can ask for VAP forms at the hospital when the child is born.
 ---
@@ -411,16 +410,32 @@ code: |
 ---
 id: marriage check
 question: |
+  % if child_born == True:
   Were you married to or in a civil union with ${ other_name} at the time the child was born?
+  % else:
+  Will you be married to or in a civil union with ${ other_name} when the child is born?
+  % endif
 subquestion: |
   % if user_gender == "mother":
+  % if child_born == True:
   If you were married to or in a civil union with ${other_name} at the time the child was born, he is presumed to be the biological father. 
   
   If his name is listed on the birth certificate as the child's father, you do not need to complete this program.
   % else:
+  If you are married to or in a civil union with ${other_name} at the time the child is born, he will be presumed to be the biological father. 
+  
+  If his name is listed on the birth certificate as the child's father, you will not need a VAP.
+  % endif
+  % else:
+  % if child_born == True:
   If you were married to or in a civil union with ${ other_name} at the time the child was born, you are presumed to be the biological father. 
   
   If your name is listed on the birth certificate as the child's father, you do not need to complete this program.
+  % else:
+  If you are married to or in a civil union with ${other_name} at the time the child is born, you will be presumed to be the biological father. 
+  
+  If your name is listed on the birth certificate as the child's father, you will not need a VAP.
+  % endif
   % endif
 fields:
   - no label: were_married
@@ -780,7 +795,7 @@ question: |
   What is ${other_name}'s former last name?
   % endif
 fields:
-  - Maiden name: mother.maiden_name
+  - Former name: mother.maiden_name
 ---
 id: child name
 question: |
@@ -892,9 +907,18 @@ question: |
 subquestion: |
   You will need someone to witness you and ${ other_name } sign the Voluntary Acknowledgement of Paternity form.
   
-  You do not have to sign at the same time as ${other_name }.
+  % if other_marriage == True:
+  % if husband.name.full(middle='full') != "":
+  The witness must be an adult age 18 or older but cannot be you, ${other_name}, or ${husband.name.full(middle='full')}.
+  % else:
+  The witness must be an adult age 18 or older but cannot be you, ${other_name}, or the husband or ex-husband signing the Denial of Paternity.
+  % endif
+  % else:
+  The witness must be an adult age 18 or older but cannot be you, or ${other_name}.
+  % endif
   
-  ${ collapse_template(witness_info) }  
+  You do not have to sign at the same time as ${other_name }.
+
 ---
 template: witness_info
 subject: |
@@ -1097,10 +1121,10 @@ code: |
 ---
 reconsider: True
 depends on:
-  - witness_options[0]
-  - witness_options[1]
-  - witness_options[2]
-  - witness_options[3]
+  #- witness_options[0]
+  #- witness_options[1]
+  #- witness_options[2]
+  #- witness_options[3]
   - witnesses[0].name.first
   - witnesses[0].name.middle
   - witnesses[0].name.last
@@ -1328,7 +1352,7 @@ fields:
 sets:
   - witnesses[i].in_other_list
 code: |
-  witness_options.append(witnesses[i].name.full(middle='full'))
+  #witness_options.append(witnesses[i].name.full(middle='full'))
   witnesses[i].in_other_list = True
 ---
 id: denial witness intro
@@ -1347,6 +1371,24 @@ subquestion: |
   % endif
   
   ${ collapse_template(witness_info) } 
+---
+id: vap witness outro
+continue button field: vap_witness_outro
+question: |
+  Reminder about VAP signatures
+subquestion: |
+  ${other_name} will also need someone to witness their signature of the Voluntary Acknowledgement of Paternity. That witness will have to enter their name, address, and phone number, and sign & date the document.
+---
+id: denial witness outro
+continue button field: denial_witness_outro
+question: |
+  Reminder about Denial of Paternity signatures
+subquestion: |
+  % if user_gender == "mother":
+  ${husband.name.full(middle='full')} will also need someone to witness their signature of the Denial of Paternity. That witness will have to enter their name, address, and phone number, and sign & date the document.
+  % else:
+  ${mother.name.full(middle='full')} and ${husband.name.full(middle='full')} will both need someone to witness their signatures of the Denial of Paternity. That witness or witnesses will have to enter their name, address, and phone number, and sign & date the document.
+  % endif
 ---
 id: get docs screen
 event: get_docs_screen
@@ -1414,7 +1456,7 @@ attachment:
       - "child_is_female": ${ True if child.gender == "Female" else False}
       - "child_address_one": |
           % if in_hospital == True:
-          ${ hospital_name + ", " + child.address.city + ", " + child.address.county + ", " + child.address.state}
+          ${ hospital_name}
           % else:
           ${child.address.line_one()}
           % endif
@@ -1484,7 +1526,7 @@ attachment:
       - "child_is_female": ${ True if child.gender == "Female" else False}
       - "child_address_one": |
           % if in_hospital == True:
-          ${ hospital_name + ", " + child.address.city + ", " + child.address.county + ", " + child.address.state}
+          ${ hospital_name}
           % else:
           ${child.address.line_one()}
           % endif
@@ -1565,6 +1607,94 @@ review:
     button: |
       **Which parent are you?**
       The ${user_gender}
+  - Edit: mother.name.first
+    button: |
+      % if user_gender == "father":
+      **The mother's name:**
+      % else:
+      **Your name:**
+      % endif
+      ${mother.name.full(middle='full')}
+  - Edit: mother.birth_date
+    button: |
+      % if user_gender == "father":
+      **${mother.name.full(middle='full')}'s date of birth:**
+      % else:
+      **Your date of birth:**
+      % endif
+      ${mother.birth_date}
+  - Edit: mother.address.address
+    button: |
+      % if user_gender == "father":
+      **${mother.name.full(middle='full')}'s address:**
+      % else:
+      **Your address:**
+      % endif
+      ${mother.address.on_one_line(bare=True)}
+  - Edit: mother.ssn
+    button: |
+      % if user_gender == "father":
+      **${mother.name.full(middle='full')}'s Social Security number:**
+      % else:
+      **Your Social Security number:**
+      % endif
+      ${mother.ssn}
+  - Edit: mother.phone_number
+    button: |
+      % if user_gender == "father":
+      **${mother.name.full(middle='full')}'s phone number:**
+      % else:
+      **Your phone number:**
+      % endif
+      ${phone_number_formatted(mother.phone_number)}
+  - Edit: mother.changed_name
+    button: |
+      % if user_gender == "mother":
+      **Did you change your surname when you got married or entered into a civil union?**
+      % else:
+      **Did ${other_name} change her surname when she got married or entered into a civil union?**
+      % endif
+      ${word(yesno(mother.changed_name))}
+    show if: other_marriage
+  - Edit: mother.maiden_name
+    button: |
+      % if user_gender == "mother":
+      **What is your former name?**
+      % else:
+      **What is ${mother.name.full(middle='full')}'s former name?**
+      % endif
+      ${mother.maiden_name}
+    show if: mother.changed_name
+  - Edit: mother.born_in_us
+    button: |
+      % if user_gender == "father":
+      **Was ${mother.name.full(middle='full')} born in the United States?**
+      % else:
+      **Were you born in the United States?**
+      % endif
+      ${word(yesno(mother.born_in_us))}
+  - Edit: mother.birth_state
+    button: |
+      % if user_gender == "father":
+      **Where was ${ mother.name.full(middle='full') } born?**
+      % else:
+      **Where were you born?**
+      % endif
+      ${mother.birth_city}, ${mother.birth_state}
+    show if: mother.born_in_us
+  - Edit: mother.birth_country
+    button: |
+      % if user_gender == "father":
+      **Where was ${ mother.name.full(middle='full') } born?**
+      % else:
+      **Where were you born?**
+      % endif
+      % if mother.birth_unit == "":
+      ${mother.birth_address}, ${mother.birth_city}, ${mother.birth_country}
+      % else:
+      ${mother.birth_address}, ${mother.birth_unit} ${mother.birth_city}, ${mother.birth_country}
+      % endif
+    show if: mother.born_in_us == False
   - Edit: father.name.first
     button: |
       % if user_gender == "mother":
@@ -1635,94 +1765,6 @@ review:
       ${father.birth_address}, ${father.birth_unit} ${father.birth_city}, ${father.birth_country}
       % endif
     show if: father.born_in_us == False
-  - Edit: mother.name.first
-    button: |
-      % if user_gender == "father":
-      **The mother's name:**
-      % else:
-      **Your name:**
-      % endif
-      ${mother.name.full(middle='full')}
-  - Edit: mother.birth_date
-    button: |
-      % if user_gender == "father":
-      **${mother.name.full(middle='full')}'s date of birth:**
-      % else:
-      **Your date of birth:**
-      % endif
-      ${mother.birth_date}
-  - Edit: mother.address.address
-    button: |
-      % if user_gender == "father":
-      **${mother.name.full(middle='full')}'s address:**
-      % else:
-      **Your address:**
-      % endif
-      ${mother.address.on_one_line(bare=True)}
-  - Edit: mother.ssn
-    button: |
-      % if user_gender == "father":
-      **${mother.name.full(middle='full')}'s Social Security number:**
-      % else:
-      **Your Social Security number:**
-      % endif
-      ${mother.ssn}
-  - Edit: mother.phone_number
-    button: |
-      % if user_gender == "father":
-      **${mother.name.full(middle='full')}'s phone number:**
-      % else:
-      **Your phone number:**
-      % endif
-      ${phone_number_formatted(mother.phone_number)}
-  - Edit: mother.changed_name
-    button: |
-      % if user_gender == "mother":
-      **Did you change your surname when you got married or entered into a civil union?**
-      % else:
-      **Did ${other_name} change her surname when she got married or entered into a civil union?**
-      % endif
-      ${word(yesno(mother.changed_name))}
-    show if: other_marriage
-  - Edit: mother.maiden_name
-    button: |
-      % if user_gender == "mother":
-      **What is your maiden name?**
-      % else:
-      **What is ${mother.name.full(middle='full')}'s maiden name?**
-      % endif
-      ${mother.maiden_name}
-    show if: mother.changed_name
-  - Edit: mother.born_in_us
-    button: |
-      % if user_gender == "father":
-      **Was ${mother.name.full(middle='full')} born in the United States?**
-      % else:
-      **Were you born in the United States?**
-      % endif
-      ${word(yesno(mother.born_in_us))}
-  - Edit: mother.birth_state
-    button: |
-      % if user_gender == "father":
-      **Where was ${ mother.name.full(middle='full') } born?**
-      % else:
-      **Where were you born?**
-      % endif
-      ${mother.birth_city}, ${mother.birth_state}
-    show if: mother.born_in_us
-  - Edit: mother.birth_country
-    button: |
-      % if user_gender == "father":
-      **Where was ${ mother.name.full(middle='full') } born?**
-      % else:
-      **Where were you born?**
-      % endif
-      % if mother.birth_unit == "":
-      ${mother.birth_address}, ${mother.birth_city}, ${mother.birth_country}
-      % else:
-      ${mother.birth_address}, ${mother.birth_unit} ${mother.birth_city}, ${mother.birth_country}
-      % endif
-    show if: mother.born_in_us == False
   - Edit: child_born
     button: |
       **Has the child been born yet?**
@@ -1740,7 +1782,7 @@ review:
       **Was ${other_name} married to or in a civil union with someone else at the time the child was born?**
       % endif
       ${word(yesno(other_marriage))}
-    show if: were_married == False and child_born == True
+    show if: were_married == False
   - Edit: child.name.first
     button: |
       **The child's name:**
@@ -1879,14 +1921,6 @@ review:
     button: |
       **Which parent are you?**
       The ${user_gender}
-  - Edit: father.name.first
-    button: |
-      % if user_gender == "mother":
-      **The father's name:**
-      % else:
-      **Your name:**
-      % endif
-      ${father.name.full(middle='full')}
   - Edit: mother.name.first
     button: |
       % if user_gender == "father":
@@ -1895,6 +1929,14 @@ review:
       **Your name:**
       % endif
       ${mother.name.full(middle='full')}
+  - Edit: father.name.first
+    button: |
+      % if user_gender == "mother":
+      **The father's name:**
+      % else:
+      **Your name:**
+      % endif
+      ${father.name.full(middle='full')}
   - Edit: child_born
     button: |
       **Has the child been born yet?**
@@ -1912,7 +1954,7 @@ review:
       **Was ${other_name} married to or in a civil union with someone else at the time the child was born?**
       % endif
       ${word(yesno(other_marriage))}
-    show if: were_married == False and child_born == True
+    show if: were_married == False
 ---
 id: review father
 event: section_father
@@ -2059,9 +2101,9 @@ review:
   - Edit: mother.maiden_name
     button: |
       % if user_gender == "mother":
-      **What is your maiden name?**
+      **What is your former name?**
       % else:
-      **What is ${mother.name.full(middle='full')}'s maiden name?**
+      **What is ${mother.name.full(middle='full')}'s former name?**
       % endif
       ${mother.maiden_name}
     show if: mother.changed_name
@@ -2103,7 +2145,7 @@ review:
       **Was ${other_name} married to or in a civil union with someone else at the time the child was born?**
       % endif
       ${word(yesno(other_marriage))}
-    show if: were_married == False and child_born == True
+    show if: were_married == False
 ---
 id: review child
 event: section_child
@@ -2162,7 +2204,7 @@ review:
       **Was ${other_name} married to or in a civil union with someone else at the time the child was born?**
       % endif
       ${word(yesno(other_marriage))}
-    show if: child_born
+    show if: were_married == False
   - Edit: husband.name.first
     button: |
       % if user_gender == "mother":

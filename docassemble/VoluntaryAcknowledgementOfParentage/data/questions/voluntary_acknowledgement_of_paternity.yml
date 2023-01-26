@@ -59,9 +59,9 @@ code: |
   if were_married == False:
     other_marriage
   set_progress(20)
-  if child_born == False:
-    if on_certificate == True:
-      certificate_kickout
+  #if child_born == True:
+  if on_certificate == True:
+    certificate_kickout
   nav.set_section('section_mother')
   mother.birth_date
   mother.address.address
@@ -196,9 +196,9 @@ question: |
 subquestion: |
   Welcome to Illinois Legal Aid Online's **Voluntary Acknowledgement of Paternity - VAP** Easy Form.
 
-  This program helps you create documents to tell the state who a child's biological father is. The form it creates as called a Voluntary Acknowledgement of Paternity, also called a VAP.
+  This program helps you create documents to tell the state who a child's biological father is. The form it creates is called a Voluntary Acknowledgement of Paternity, also called a VAP.
   
-   Once legal paternity is shown, the biological father will have all the rights and responsiblities of a legal parent. The father will have the right to have a relationship with the child, but he will also be responsible for supporting the child financially.
+   Once legal paternity is shown, the biological father will have all the rights and responsiblities of a legal parent. The father will have the right to have a relationship with the child, but they will also be responsible for supporting the child financially.
   
   The form you create can only be used in Illinois.
 field: sees_nav_bar
@@ -275,7 +275,7 @@ subquestion: |
   * The mother's husband or ex-husband's address, birth date, and birth place, and
   * The date of their marriage. 
   
-  Note: this program can only be used if both biological parents agree and can sign the forms. If the parents do not agree, you must ask a court to establish paternity. Learn how to [**start a court case to establish paternity**](https://www.illinoislegalaid.org/legal-information/starting-case-parentage-court).
+  Note: this program can only be used if both biological parents agree and can sign the forms. If the parents do not agree, you must ask a court to establish paternity. To learn more, read ILAO's article about [**starting a court case to establish paternity**](https://www.illinoislegalaid.org/legal-information/starting-case-parentage-court).
 ---
 id: user gender
 question: |
@@ -326,7 +326,7 @@ id: any husband knowledge
 question: |
   Do you have information about ${other_name}'s husband or ex-husband?
 subquestion: |
-  The Denial of Paternity form can include his name, address, phone number, social security number, and birthplace.
+  The Denial of Paternity form can include their name, address, phone number, social security number, and birthplace.
 fields:
   - no label: husband_known
     datatype: yesnoradio
@@ -358,7 +358,7 @@ question: |
   % endif
 subquestion: |
   % if user_gender == "mother":
-  Once legal paternity is shown, ${other_name} will have all the rights of a legal parent, but also the responsibilities of a parent. ${other_name} will have the right to have a relationship with the child, but he will also be responsible for supporting the child financially.
+  Once legal paternity is shown, ${other_name} will have all the rights of a legal parent, but also the responsibilities of a parent. ${other_name} will have the right to have a relationship with the child, but they will also be responsible for supporting the child financially.
   % else:
   Once legal paternity is shown, you will have all the rights of a legal parent, but also the responsibilities of a parent. You will have the right to have a relationship with the child, but you will also be responsible for supporting the child financially.
   % endif
@@ -418,13 +418,13 @@ question: |
 subquestion: |
   % if user_gender == "mother":
   % if child_born == True:
-  If you were married to or in a civil union with ${other_name} at the time the child was born, he is presumed to be the biological father. 
+  If you were married to or in a civil union with ${other_name} at the time the child was born, they are presumed to be the biological father. 
   
-  If his name is listed on the birth certificate as the child's father, you do not need to complete this program.
+  If their name is listed on the birth certificate as the child's father, you do not need to complete this program.
   % else:
-  If you are married to or in a civil union with ${other_name} at the time the child is born, he will be presumed to be the biological father. 
+  If you are married to or in a civil union with ${other_name} at the time the child is born, they will be presumed to be the biological father. 
   
-  If his name is listed on the birth certificate as the child's father, you will not need a VAP.
+  If their name is listed on the birth certificate as the child's father, you will not need a VAP.
   % endif
   % else:
   % if child_born == True:
@@ -443,10 +443,18 @@ fields:
 ---
 id: birth certificate
 question: |
+  % if child_born == True:
   % if user_gender == "mother":
   Is ${ other_name} listed on the child's birth certificate?
   % else:
   Are you listed on the child's birth certificate?
+  % endif
+  % else:
+  % if user_gender == "mother":
+  Will ${other_name} be listed on the child's birth certificate?
+  % else:
+  Will you be listed on the child's birth certificate?
+  % endif
   % endif
 fields:
   - no label: on_certificate
@@ -457,23 +465,43 @@ event: certificate_kickout
 question: |
   Sorry
 subquestion: |
+  % if child_born == True:
   If the child's biological father is listed on the birth certificate, there is no need to file a Voluntary Acknowledgement of Paternity.
+  % else:
+  If the child's biological father will be listed on the birth certificate, there is no need to file a Voluntary Acknowledgement of Paternity.
+  % endif
 buttons:
   - Exit: exit
   - Restart: restart
 ---
 id: other marriage
 question: |
+  % if child_born == True:
   % if user_gender == "mother":
-  Were you married to or in a civil union with someone else at the time the child was conceived or born?
+  Were you married to or in a civil union with someone else at the time the child was born?
   % else:
-  Was ${other_name} married to or in a civil union with someone else at the time the child was conceived or born?
+  Was ${other_name} married to or in a civil union with someone else at the time the child was born?
+  % endif
+  % else:
+  % if user_gender == "mother":
+  Were you married to or in a civil union with someone else at the time the child was conceived?
+  % else:
+  Was ${other_name} married to or in a civil union with someone else at the time the child was conceived?
+  % endif
   % endif
 subquestion: |
+  % if child_born == True:
   % if user_gender == "mother":
-  If you were married or in a civil union at the time the child was conceived or born, your husband or ex-husband must sign a Denial of Paternity form. You will get a completed copy of this form when you finish, but it will need to be signed by you and your husband or ex-husband.
+  If you were married or in a civil union at the time the child was born, your husband or ex-husband must sign a Denial of Paternity form. You will get a completed copy of this form when you finish, but it will need to be signed by you and your husband or ex-husband.
   % else:
-  If ${ other_name} was married or in a civil union at the time the child was conceived or born, the husband or ex-husband must fill out and sign a Denial of Paternity form. You will get a completed copy of this form when you finish, but it will need to be signed by ${other_name}'s husband or ex-husband.
+  If ${ other_name} was married or in a civil union at the time the child was born, the husband or ex-husband must fill out and sign a Denial of Paternity form. You will get a completed copy of this form when you finish, but it will need to be signed by ${other_name}'s husband or ex-husband.
+  % endif
+  % else:
+  % if user_gender == "mother":
+  If you were married or in a civil union at the time the child was conceived, your husband or ex-husband must sign a Denial of Paternity form. You will get a completed copy of this form when you finish, but it will need to be signed by you and your husband or ex-husband.
+  % else:
+  If ${ other_name} was married or in a civil union at the time the child was conceived, the husband or ex-husband must fill out and sign a Denial of Paternity form. You will get a completed copy of this form when you finish, but it will need to be signed by ${other_name}'s husband or ex-husband.
+  % endif
   % endif
 fields:
   - no label: other_marriage
@@ -488,9 +516,7 @@ question: |
   % endif
 fields:
   - Birth date: father.birth_date
-    datatype: BirthDate
-    min: 01/01/1900
-    max: ${ today() }
+    datatype: ThreePartsDate
 ---
 id: mother birthdate
 question: |
@@ -501,9 +527,7 @@ question: |
   % endif
 fields:
   - Birth date: mother.birth_date
-    datatype: BirthDate
-    min: 01/01/1900
-    max: ${ today() }
+    datatype: ThreePartsDate
 ---
 id: husband birthdate
 question: |
@@ -512,9 +536,7 @@ subquestion: |
   If you do not know, leave this question blank.
 fields:
   - Birth date: husband.birth_date
-    datatype: BirthDate
-    min: 01/01/1900
-    max: ${ today() }
+    datatype: ThreePartsDate
     required: False
 ---
 id: father address
@@ -625,9 +647,9 @@ question: |
   % endif
 subquestion: |
   % if user_gender == "mother":
-  This information is not required, but it can help the court contact ${other_name}.
+  This information is not required, but it can help the Illinois Department of Healthcare and Family Services contact ${other_name}.
   % else:
-  This information is not required, but it can help the court contact you.
+  This information is not required, but it can help the Illinois Department of Healthcare and Family Services contact you.
   % endif
 fields:
   - Phone number: father.phone_number
@@ -643,9 +665,9 @@ question: |
   % endif
 subquestion: |
   % if user_gender == "mother":
-  This information is not required, but it can help the court contact you.
+  This information is not required, but it can help the Illinois Department of Healthcare and Family Services contact you.
   % else:
-  This information is not required, but it can help the court contact ${other_name}.
+  This information is not required, but it can help the Illinois Department of Healthcare and Family Services contact ${other_name}.
   % endif
 fields:
   - Phone number: mother.phone_number
@@ -656,7 +678,7 @@ id: husband phone
 question: |
   What is ${husband.name.full(middle='full')}'s phone number?
 subquestion: |
-  This information is not required, but it can help the court contact ${husband.name.full(middle='full')}.
+  This information is not required, but it can help the Illinois Department of Healthcare and Family Services contact ${husband.name.full(middle='full')}.
 fields:
   - Phone number: husband.phone_number
     datatype: al_international_phone
@@ -781,7 +803,7 @@ question: |
   % if user_gender == "mother":
   Did you change your last name when you got married or entered into a civil union?
   % else:
-  Did ${other_name} change her last name when she got married or entered into a civil union?
+  Did ${other_name} change their last name when they got married or entered into a civil union?
   % endif
 fields:
   - no label: mother.changed_name
@@ -812,28 +834,26 @@ fields:
 id: child gender
 question: |
   What is the gender marker on ${ child.name.full(middle='full')}'s birth certificate?
-subquestion: |
-  ${ collapse_template(gender_x) } 
 field: child.gender
 choices:
   - Male
   - Female
-  - X
+  - X: X
+    help: |
+      Illinois currently allows birth certificates to list X as a gender marker, but the VAP form has not been updated to reflect this. If you select X on this question, the gender marker on the VAP form will be left blank.
 ---
 template: gender_x
 subject: |
   **What if the gender listed on the birth certificate is X?**
 content: | 
-  Illinois currently allows birth certificates to list X as a gender marker, but the VAP form has not been updated to reflect this. If you select X on this question, the gender marker on the VAP form will be left blank
+  Illinois currently allows birth certificates to list X as a gender marker, but the VAP form has not been updated to reflect this. If you select X on this question, the gender marker on the VAP form will be left blank.
 ---
 id: child birthdate
 question: |
   What is ${child.name.full(middle='full')}'s date of birth?
 fields:
   - Birth date: child.birth_date
-    datatype: BirthDate
-    min: ${mother.birth_date}
-    max: ${ today() }
+    datatype: ThreePartsDate
     required: False
 ---
 id: hospital check
@@ -846,7 +866,7 @@ fields:
 #I have not implemented the county list from other programs because this county is not necessarily in Illinois. I have also used the child.address data to store the child's birthplace location. child.address refers to the child's birthplace.
 id: child hospital address
 question: |
-  What is the name, city, county, and state of the hospital where ${child.name.full(middle='full')} was born?
+  Where was ${child.name.full(middle='full')} born?
 fields:
   - Hospital name: hospital_name
   - City: child.address.city
@@ -857,7 +877,7 @@ fields:
 ---
 id: child other birthplace address
 question: |
-  What is the street address, city, county, and state of the place where ${child.name.full(middle='full')} was born?
+  Where was ${child.name.full(middle='full')} born?
 fields:
   - Street address: child.address.address
     address autocomplete: True
@@ -877,11 +897,11 @@ subquestion: |
   % if user_gender == "mother":
   Before you can file your forms, you and your husband or ex-husband need to sign a Denial of Paternity form.
   
-  You will need to know your husband or ex-husband's address, his birth date and place of birth, and the date when you were married. If you do not enter this information now, you will have to add it to the Denial of Paternity form before you mail the forms to the state.
+  You will need to know your husband or ex-husband's address, their birth date and place of birth, and the date when you were married. If you do not enter this information now, you will have to add it to the Denial of Paternity form before you mail the forms to the state.
   % else:
-  Before you can file your forms, ${other_name} and her husband or ex-husband need to sign a Denial of Paternity form.
+  Before you can file your forms, ${other_name} and their husband or ex-husband need to sign a Denial of Paternity form.
   
-  You will need to know ${other_name}'s husband or ex-husband's name, address, his birth date and place of birth, and the date when he and ${other_name} were married. If you do not enter this information now, you will have to add it to the Denial of Paternity form before you mail the forms to the state.
+  You will need to know ${other_name}'s husband or ex-husband's name, address, their birth date and place of birth, and the date when they and ${other_name} were married. If you do not enter this information now, you will have to add it to the Denial of Paternity form before you mail the forms to the state.
   % endif
 ---
 id: marriage date
@@ -897,7 +917,7 @@ fields:
   - Date: marriage_date
     datatype: date
     required: False
-    min: ${mother.birth_date}
+    min: ${mother.birth_dateplus(years=10)}
     max: ${ today() }
 ---
 id: witness intro
@@ -1370,14 +1390,18 @@ subquestion: |
   ${other_name} does not have to sign the document at the same time as ${husband.name.full(middle='full')}.
   % endif
   
-  ${ collapse_template(witness_info) } 
+  % if husband.name.full(middle='full') != "":
+  The witness must be an adult age 18 or older but cannot be you, ${other_name}, or ${husband.name.full(middle='full')}.
+  % else:
+  The witness must be an adult age 18 or older but cannot be you, ${other_name}, or the husband or ex-husband signing the Denial of Paternity.
+  % endif
 ---
 id: vap witness outro
 continue button field: vap_witness_outro
 question: |
   Reminder about VAP signatures
 subquestion: |
-  ${other_name} will also need someone to witness their signature of the Voluntary Acknowledgement of Paternity. That witness will have to enter their name, address, and phone number, and sign & date the document.
+  ${other_name} will also need someone to witness their signature of the Voluntary Acknowledgement of Paternity. That witness will have to add their name and contact information, then sign and date the form.
 ---
 id: denial witness outro
 continue button field: denial_witness_outro
@@ -1385,9 +1409,9 @@ question: |
   Reminder about Denial of Paternity signatures
 subquestion: |
   % if user_gender == "mother":
-  ${husband.name.full(middle='full')} will also need someone to witness their signature of the Denial of Paternity. That witness will have to enter their name, address, and phone number, and sign & date the document.
+  ${husband.name.full(middle='full')} will also need someone to witness their signature of the Denial of Paternity. That witness will have to add their name and contact information, then sign and date the form.
   % else:
-  ${mother.name.full(middle='full')} and ${husband.name.full(middle='full')} will both need someone to witness their signatures of the Denial of Paternity. That witness or witnesses will have to enter their name, address, and phone number, and sign & date the document.
+  ${mother.name.full(middle='full')} and ${husband.name.full(middle='full')} will both need someone to witness their signatures of the Denial of Paternity. That witness will have to add their name and contact information, then sign and date the form.
   % endif
 ---
 id: get docs screen
@@ -1460,7 +1484,7 @@ attachment:
           % else:
           ${child.address.line_one()}
           % endif
-      - "child_address_two": ${child.address.city + ", " + child.address.county + " County, " + child.address.state}
+      - "child_address_two": ${child.address.city + ", " + child.address.county + " Co., " + child.address.state}
       - "father_name_first": ${father.name.first}
       - "father_name_middle": ${father.name.middle if father.name.middle != "" else ""}
       - "father_name_last": ${father.name.last}
@@ -1530,7 +1554,7 @@ attachment:
           % else:
           ${child.address.line_one()}
           % endif
-      - "child_address_two": ${child.address.city + ", " + child.address.county + " County, " + child.address.state}
+      - "child_address_two": ${child.address.city + ", " + child.address.county + " Co., " + child.address.state}
       - "husband_name_first": ${husband.name.first}
       - "husband_name_middle": ${husband.name.middle}
       - "husband_name_last": ${husband.name.last}
@@ -1650,18 +1674,18 @@ review:
   - Edit: mother.changed_name
     button: |
       % if user_gender == "mother":
-      **Did you change your surname when you got married or entered into a civil union?**
+      **Did you change your last name when you got married or entered into a civil union?**
       % else:
-      **Did ${other_name} change her surname when she got married or entered into a civil union?**
+      **Did ${other_name} change their last name when they got married or entered into a civil union?**
       % endif
       ${word(yesno(mother.changed_name))}
     show if: other_marriage
   - Edit: mother.maiden_name
     button: |
       % if user_gender == "mother":
-      **What is your former name?**
+      **What is your former last name?**
       % else:
-      **What is ${mother.name.full(middle='full')}'s former name?**
+      **What is ${mother.name.full(middle='full')}'s former last name?**
       % endif
       ${mother.maiden_name}
     show if: mother.changed_name
@@ -1692,7 +1716,7 @@ review:
       % if mother.birth_unit == "":
       ${mother.birth_address}, ${mother.birth_city}, ${mother.birth_country}
       % else:
-      ${mother.birth_address}, ${mother.birth_unit} ${mother.birth_city}, ${mother.birth_country}
+      ${mother.birth_address}, ${mother.birth_unit}, ${mother.birth_city}, ${mother.birth_country}
       % endif
     show if: mother.born_in_us == False
   - Edit: father.name.first
@@ -1762,7 +1786,7 @@ review:
       % if father.birth_unit == "":
       ${father.birth_address}, ${father.birth_city}, ${father.birth_country}
       % else:
-      ${father.birth_address}, ${father.birth_unit} ${father.birth_city}, ${father.birth_country}
+      ${father.birth_address}, ${father.birth_unit}, ${father.birth_city}, ${father.birth_country}
       % endif
     show if: father.born_in_us == False
   - Edit: child_born
@@ -1858,7 +1882,7 @@ review:
       % if husband.birth_unit == "":
       ${husband.birth_address}, ${husband.birth_city}, ${husband.birth_country}
       % else:
-      ${husband.birth_address}, ${husband.birth_unit} ${husband.birth_city}, ${husband.birth_country}
+      ${husband.birth_address}, ${husband.birth_unit}, ${husband.birth_city}, ${husband.birth_country}
       % endif
     show if: other_marriage == True and husband.born_in_us == False 
   - Edit: marriage_date
@@ -1876,7 +1900,7 @@ review:
       ${word(yesno(user_witness_known))}
   - Edit: user_witness.name.first
     button: |
-      **Witness's name:**
+      **Vap witness's name:**
       ${user_witness.name.full(middle='full')}
     show if: user_witness_known
   - Edit: user_witness.address.address
@@ -2034,7 +2058,7 @@ review:
       % if father.birth_unit == "":
       ${father.birth_address}, ${father.birth_city}, ${father.birth_country}
       % else:
-      ${father.birth_address}, ${father.birth_unit} ${father.birth_city}, ${father.birth_country}
+      ${father.birth_address}, ${father.birth_unit}, ${father.birth_city}, ${father.birth_country}
       % endif
     show if: father.born_in_us == False
 ---
@@ -2092,18 +2116,18 @@ review:
   - Edit: mother.changed_name
     button: |
       % if user_gender == "mother":
-      **Did you change your surname when you got married or entered into a civil union?**
+      **Did you change your last name when you got married or entered into a civil union?**
       % else:
-      **Did ${other_name} change her surname when she got married or entered into a civil union?**
+      **Did ${other_name} change their last name when they got married or entered into a civil union?**
       % endif
       ${word(yesno(mother.changed_name))}
     show if: other_marriage
   - Edit: mother.maiden_name
     button: |
       % if user_gender == "mother":
-      **What is your former name?**
+      **What is your former last name?**
       % else:
-      **What is ${mother.name.full(middle='full')}'s former name?**
+      **What is ${mother.name.full(middle='full')}'s former last name?**
       % endif
       ${mother.maiden_name}
     show if: mother.changed_name
@@ -2134,7 +2158,7 @@ review:
       % if mother.birth_unit == "":
       ${mother.birth_address}, ${mother.birth_city}, ${mother.birth_country}
       % else:
-      ${mother.birth_address}, ${mother.birth_unit} ${mother.birth_city}, ${mother.birth_country}
+      ${mother.birth_address}, ${mother.birth_unit}, ${mother.birth_city}, ${mother.birth_country}
       % endif
     show if: mother.born_in_us == False
   - Edit: other_marriage
@@ -2250,7 +2274,7 @@ review:
       % if husband.birth_unit == "":
       ${husband.birth_address}, ${husband.birth_city}, ${husband.birth_country}
       % else:
-      ${husband.birth_address}, ${husband.birth_unit} ${husband.birth_city}, ${husband.birth_country}
+      ${husband.birth_address}, ${husband.birth_unit}, ${husband.birth_city}, ${husband.birth_country}
       % endif
     show if: other_marriage == True and husband.born_in_us == False 
   - Edit: marriage_date
@@ -2276,7 +2300,7 @@ review:
       ${word(yesno(user_witness_known))}
   - Edit: user_witness.name.first
     button: |
-      **Witness's name:**
+      **VAP witness's name:**
       ${user_witness.name.full(middle='full')}
     show if: user_witness_known
   - Edit: user_witness.address.address

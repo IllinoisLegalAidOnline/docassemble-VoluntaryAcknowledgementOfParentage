@@ -56,6 +56,8 @@ code: |
     qualify_kickout
   if child_born == False:
     not_yet_born
+  else:
+    child.birth_date
   if were_married == False:
     other_marriage
   set_progress(20)
@@ -272,7 +274,7 @@ subquestion: |
   
   If the child's mother was married to someone else when the child was conceived or born, you need to know:
   
-  * The mother's husband or ex-husband's address, birth date, and birth place, and
+  * The mother's spouse or ex-spouse's address, birth date, and birth place, and
   * The date of their marriage. 
   
   Note: this program can only be used if both biological parents agree and can sign the forms. If the parents do not agree, you must ask a court to establish paternity. To learn more, read ILAO's article about [**starting a court case to establish paternity**](https://www.illinoislegalaid.org/legal-information/starting-case-parentage-court).
@@ -324,7 +326,7 @@ fields:
 ---
 id: any husband knowledge
 question: |
-  Do you have information about ${other_name}'s husband or ex-husband?
+  Do you have information about ${other_name}'s spouse or ex-spouse?
 subquestion: |
   The Denial of Paternity form can include their name, address, phone number, social security number, and birthplace.
 fields:
@@ -334,9 +336,9 @@ fields:
 id: husband name
 question: |
   % if user_gender == "mother":
-  What is the name of your husband or ex-husband?
+  What is the name of your spouse or ex-spouse?
   % else:
-  What is the name of ${other_name}'s husband or ex-husband?
+  What is the name of ${other_name}'s spouse or ex-spouse?
   % endif
 fields:
   - First: husband.name.first
@@ -410,19 +412,19 @@ code: |
 ---
 id: marriage check
 question: |
-  % if child_born == True:
-  Were you married to or in a civil union with ${ other_name} at the time the child was born?
-  % else:
-  Will you be married to or in a civil union with ${ other_name} when the child is born?
-  % endif
+  Were you married to or in a civil union with ${ other_name} at the time the child was born or conceived?
 subquestion: |
   % if user_gender == "mother":
   % if child_born == True:
   If you were married to or in a civil union with ${other_name} at the time the child was born, they are presumed to be the biological father. 
   
+  If the child was born within 300 days of your marriage or civil union with ${other_name} ending, they are presumed to be the biological father. This means that if you and ${other_name} were married anytime between ${child.birth_date.minus(days=300)} and ${child.birth_date}--and you were not married to anyone else during that time--you should select **Yes**.
+  
   If their name is listed on the birth certificate as the child's father, you do not need to complete this program.
   % else:
   If you are married to or in a civil union with ${other_name} at the time the child is born, they will be presumed to be the biological father. 
+  
+  If the child is born within 300 days of your marriage or civil union with ${other_name} ending, they are presumed to be the biological father.
   
   If their name is listed on the birth certificate as the child's father, you will not need a VAP.
   % endif
@@ -430,9 +432,13 @@ subquestion: |
   % if child_born == True:
   If you were married to or in a civil union with ${ other_name} at the time the child was born, you are presumed to be the biological father. 
   
+  If the child was born within 300 days of your marriage or civil union with ${other_name} ending, you are presumed to be the biological father. This means that if you and ${other_name} were married anytime between ${child.birth_date.minus(days=300)} and ${child.birth_date}--and they were not married to anyone else during that time--you should select **Yes**.
+  
   If your name is listed on the birth certificate as the child's father, you do not need to complete this program.
   % else:
   If you are married to or in a civil union with ${other_name} at the time the child is born, you will be presumed to be the biological father. 
+  
+  If the child is born within 300 days of your marriage or civil union with ${other_name} ending, you will be presumed to be the biological father.
   
   If your name is listed on the birth certificate as the child's father, you will not need a VAP.
   % endif
@@ -476,31 +482,27 @@ buttons:
 ---
 id: other marriage
 question: |
-  % if child_born == True:
   % if user_gender == "mother":
-  Were you married to or in a civil union with someone else at the time the child was born?
+  Were you married to or in a civil union with someone else at the time the child was born or conceived?
   % else:
-  Was ${other_name} married to or in a civil union with someone else at the time the child was born?
-  % endif
-  % else:
-  % if user_gender == "mother":
-  Were you married to or in a civil union with someone else at the time the child was conceived?
-  % else:
-  Was ${other_name} married to or in a civil union with someone else at the time the child was conceived?
-  % endif
+  Was ${other_name} married to or in a civil union with someone else at the time the child was born or conceived?
   % endif
 subquestion: |
   % if child_born == True:
   % if user_gender == "mother":
-  If you were married or in a civil union at the time the child was born, your husband or ex-husband must sign a Denial of Paternity form. You will get a completed copy of this form when you finish, but it will need to be signed by you and your husband or ex-husband.
+  If you were married or in a civil union at the time the child was born, your spouse or ex-spouse must sign a Denial of Paternity form. You will get a completed copy of this form when you finish, but it will need to be signed by you and your spouse or ex-spouse.
+  
+  If the child was born within 300 days of your marriage or civil union with somebody ending, they are presumed to be the biological father. This means that if you were married or in a civil union with someone other than ${other_name} anytime between ${child.birth_date.minus(days=300)} and ${child.birth_date} you should select **Yes**.
   % else:
-  If ${ other_name} was married or in a civil union at the time the child was born, the husband or ex-husband must fill out and sign a Denial of Paternity form. You will get a completed copy of this form when you finish, but it will need to be signed by ${other_name}'s husband or ex-husband.
+  If ${ other_name} was married or in a civil union at the time the child was born, the spouse or ex-spouse must fill out and sign a Denial of Paternity form. You will get a completed copy of this form when you finish, but it will need to be signed by ${other_name}'s spouse or ex-spouse.
+  
+  If the child was born within 300 days of ${other_name}'s marriage or civil union with someone, they are presumed to be the biological father. This means that if ${other_name} was married or in a civil union with someone other than you anytime between ${child.birth_date.minus(days=300)} and ${child.birth_date} you should select **Yes**.
   % endif
   % else:
   % if user_gender == "mother":
-  If you were married or in a civil union at the time the child was conceived, your husband or ex-husband must sign a Denial of Paternity form. You will get a completed copy of this form when you finish, but it will need to be signed by you and your husband or ex-husband.
+  If you were married or in a civil union within 300 days of the child's upcoming birth, your spouse or ex-spouse must sign a Denial of Paternity form. You will get a completed copy of this form when you finish, but it will need to be signed by you and your spouse or ex-spouse.
   % else:
-  If ${ other_name} was married or in a civil union at the time the child was conceived, the husband or ex-husband must fill out and sign a Denial of Paternity form. You will get a completed copy of this form when you finish, but it will need to be signed by ${other_name}'s husband or ex-husband.
+  If ${ other_name} was married or in a civil union within 300 days of the child's upcoming birth, the spouse or ex-spouse must fill out and sign a Denial of Paternity form. You will get a completed copy of this form when you finish, but it will need to be signed by ${other_name}'s spouse or ex-spouse.
   % endif
   % endif
 fields:
@@ -854,7 +856,6 @@ question: |
 fields:
   - Birth date: child.birth_date
     datatype: ThreePartsDate
-    required: False
 ---
 id: hospital check
 question: |
@@ -895,13 +896,13 @@ question: |
   Denial of Paternity
 subquestion: |
   % if user_gender == "mother":
-  Before you can file your forms, you and your husband or ex-husband need to sign a Denial of Paternity form.
+  Before you can file your forms, you and your spouse or ex-spouse need to sign a Denial of Paternity form.
   
-  You will need to know your husband or ex-husband's address, their birth date and place of birth, and the date when you were married. If you do not enter this information now, you will have to add it to the Denial of Paternity form before you mail the forms to the state.
+  You will need to know your spouse or ex-spouse's address, their birth date and place of birth, and the date when you were married. If you do not enter this information now, you will have to add it to the Denial of Paternity form before you mail the forms to the state.
   % else:
-  Before you can file your forms, ${other_name} and their husband or ex-husband need to sign a Denial of Paternity form.
+  Before you can file your forms, ${other_name} and their spouse or ex-spouse need to sign a Denial of Paternity form.
   
-  You will need to know ${other_name}'s husband or ex-husband's name, address, their birth date and place of birth, and the date when they and ${other_name} were married. If you do not enter this information now, you will have to add it to the Denial of Paternity form before you mail the forms to the state.
+  You will need to know ${other_name}'s spouse or ex-spouse's name, address, their birth date and place of birth, and the date when they and ${other_name} were married. If you do not enter this information now, you will have to add it to the Denial of Paternity form before you mail the forms to the state.
   % endif
 ---
 id: marriage date
@@ -931,7 +932,7 @@ subquestion: |
   % if husband.name.full(middle='full') != "":
   The witness must be an adult age 18 or older but cannot be you, ${other_name}, or ${husband.name.full(middle='full')}.
   % else:
-  The witness must be an adult age 18 or older but cannot be you, ${other_name}, or the husband or ex-husband signing the Denial of Paternity.
+  The witness must be an adult age 18 or older but cannot be you, ${other_name}, or the spouse or ex-spouse signing the Denial of Paternity.
   % endif
   % else:
   The witness must be an adult age 18 or older but cannot be you, or ${other_name}.
@@ -948,7 +949,7 @@ content: |
   % if husband.name.full(middle='full') != "":
   The witness must be an adult age 18 or older but cannot be you, ${other_name}, or ${husband.name.full(middle='full')}.
   % else:
-  The witness must be an adult age 18 or older but cannot be you, ${other_name}, or the husband or ex-husband signing the Denial of Paternity.
+  The witness must be an adult age 18 or older but cannot be you, ${other_name}, or the spouse or ex-spouse signing the Denial of Paternity.
   % endif
   % else:
   The witness must be an adult age 18 or older but cannot be you, or {other_name}.
@@ -1393,7 +1394,7 @@ subquestion: |
   % if husband.name.full(middle='full') != "":
   The witness must be an adult age 18 or older but cannot be you, ${other_name}, or ${husband.name.full(middle='full')}.
   % else:
-  The witness must be an adult age 18 or older but cannot be you, ${other_name}, or the husband or ex-husband signing the Denial of Paternity.
+  The witness must be an adult age 18 or older but cannot be you, ${other_name}, or the spouse or ex-spouse signing the Denial of Paternity.
   % endif
 ---
 id: vap witness outro
@@ -1793,6 +1794,11 @@ review:
     button: |
       **Has the child been born yet?**
       ${word(yesno(child_born))}
+  - Edit: child.birth_date
+    button: |
+      **${child.name.full(middle='full')}'s birth date:**
+      ${child.birth_date}
+    show if: child_born
   - Edit: were_married
     button: |
       **Were you married to or in a civil union with ${ other_name} at the time the child was born?**
@@ -1817,11 +1823,6 @@ review:
       **${ child.name.full(middle='full')}'s legal gender:**
       ${child.gender}
     show if: child_born
-  - Edit: child.birth_date
-    button: |
-      **${child.name.full(middle='full')}'s birth date:**
-      ${child.birth_date}
-    show if: child_born
   - Edit: in_hospital
     button: |
       **Was ${child.name.full(middle='full')} born in a hospital?**
@@ -1842,7 +1843,7 @@ review:
       % if user_gender == "mother":
       **Your husband or ex-husband's name:**
       % else:
-      **${mother.name.full(middle='full')}'s husband or ex-husband's name:**
+      **${mother.name.full(middle='full')}'s spouse or ex-spouse's name:**
       % endif
       ${husband.name.full(middle='full')}
     show if: other_marriage
@@ -1965,6 +1966,11 @@ review:
     button: |
       **Has the child been born yet?**
       ${word(yesno(child_born))}
+  - Edit: child.birth_date
+    button: |
+      **${child.name.full(middle='full')}'s birth date:**
+      ${child.birth_date}
+    show if: child_born
   - Edit: were_married
     button: |
       **Were you married to or in a civil union with ${ other_name} at the time the child was born?**
@@ -2232,9 +2238,9 @@ review:
   - Edit: husband.name.first
     button: |
       % if user_gender == "mother":
-      **Your husband or ex-husband's name:**
+      **Your spouse or ex-spouse's name:**
       % else:
-      **${mother.name.full(middle='full')}'s husband or ex-husband's name:**
+      **${mother.name.full(middle='full')}'s spouse or ex-spouse's name:**
       % endif
       ${husband.name.full(middle='full')}
     show if: other_marriage

@@ -918,7 +918,7 @@ fields:
   - Date: marriage_date
     datatype: date
     required: False
-    min: ${mother.birth_dateplus(years=10)}
+    min: ${mother.birth_date.plus(years=10)}
     max: ${ today() }
 ---
 id: witness intro

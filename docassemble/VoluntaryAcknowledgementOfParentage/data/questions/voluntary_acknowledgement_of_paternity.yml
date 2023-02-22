@@ -35,7 +35,7 @@ sections:
   - section_mother: "Mother's information"
   - section_father: "Father's information"
   - section_child: "Child's information"
-  - section_denial: Marriage (optional)
+  - section_denial: Previous marriage (optional)
   - section_witnesses: Witnesses
   - section_download: Download
 ---
@@ -100,7 +100,6 @@ code: |
   if other_marriage == True:
     denial_intro
     if user_gender == "mother" or husband_known == True:
-      husband_known = True
       husband.name.first
       marriage_date
       husband.birth_date
@@ -114,67 +113,6 @@ code: |
   nav.set_section('section_witnesses')
   set_progress(80)
   witness_intro
-  #witnesses_start_unknown
-  #witness_options.there_is_another = False
-  #if dad_witness_known == True:
-    #if use_a_list == True:
-      #if witnesses[0].name_multiple == "Other":
-        #witnesses[0].name.first
-        #witnesses[0].address.address
-        #witnesses[0].phone_number
-        #dad_witness_answered = True
-    #else:
-      #witnesses[0].name_multiple = "Other"
-      #witnesses[0].name.first
-      #witnesses[0].address.address
-      #witnesses[0].phone_number
-      #dad_witness_answered = True
-      #use_a_list = True
-  #if mom_witness_known == True:
-    #if use_a_list == True:
-      #if witnesses[1].name_multiple == "Other":
-        #witnesses[1].name.first
-        #witnesses[1].address.address
-        #witnesses[1].phone_number
-        #mom_vap_witness_answered = True
-    #else:
-      #witnesses[1].name_multiple = "Other"
-      #witnesses[1].name.first
-      #witnesses[1].address.address
-      #witnesses[1].phone_number
-      #mom_vap_witness_answered = True
-      #use_a_list = True
-  #if other_marriage == True:
-    #denial_witness_intro
-    #if mom_deny_witness_known == True:
-      #if use_a_list == True:
-        #if witnesses[2].name_multiple == "Other":
-          #witnesses[2].name.first
-          #witnesses[2].address.address
-          #witnesses[2].phone_number
-          #mom_denial_witness_answered = True
-      #else:
-        #witnesses[2].name_multiple = "Other"
-        #witnesses[2].name.first
-        #witnesses[2].address.address
-        #witnesses[2].phone_number
-        #mom_denial_witness_answered = True
-        #use_a_list = True
-    #if husband_witness_known == True:
-      #if use_a_list == True:
-        #if witnesses[3].name_multiple == "Other":
-          #witnesses[3].name.first
-          #witnesses[3].address.address
-          #witnesses[3].phone_number
-          #husband_witness_answered = True
-      #else:
-        #witnesses[3].name_multiple = "Other"
-        #witnesses[3].name.first
-        #witnesses[3].address.address
-        #witnesses[3].phone_number
-        #husband_witness_answered = True
-        #use_a_list = True
-  #check_those_witnesses
   if user_witness_known == True:
     user_witness.name.first
     user_witness.address.address
@@ -342,11 +280,9 @@ question: |
   % endif
 fields:
   - First: husband.name.first
-    required: False
   - Middle: husband.name.middle
     required: False
   - Last: husband.name.last
-    required: False
   - Suffix: husband.name.suffix
     required: False
     code: name_suffix()
@@ -392,7 +328,9 @@ question: |
 subquestion: |
   The Voluntary Acknowledgment of Paternity (VAP) may be completed before your child is born, but is not valid until the child is born and the VAP is filed with the Illinios Department of Healthcare and Family Services (HFS).
 
-  You will need to add information about your child's birth and name to the VAP after they are born. Alternatively, you can ask for VAP forms at the hospital when the child is born.
+  You will need to add information about your child's birth and name to the VAP after they are born. Alternatively, you can 
+  * Have both parents add their information to the birth certificate, or
+  * Ask for VAP forms at the hospital when the child is born.
 ---
 depends on:
   - user_gender
@@ -416,29 +354,29 @@ question: |
 subquestion: |
   % if user_gender == "mother":
   % if child_born == True:
-  If you were married to or in a civil union with ${other_name} at the time the child was born, they are presumed to be the biological father. 
+  If you were married to or in a civil union with ${other_name} when the child was born, they are presumed to be the biological father. 
   
-  If the child was born within 300 days of your marriage or civil union with ${other_name} ending, they are presumed to be the biological father. This means that if you and ${other_name} were married anytime between ${child.birth_date.minus(days=300)} and ${child.birth_date}--and you were not married to anyone else during that time--you should select **Yes**.
+  If the child was born within 300 days of the end of your marriage or civil union with ${other_name}, they are presumed to be the biological father. This means that if you and ${other_name} were married anytime between ${child.birth_date.minus(days=300)} and ${child.birth_date}--and you were not married to anyone else during that time--you should select **Yes**.
   
-  If their name is listed on the birth certificate as the child's father, you do not need to complete this program.
+  If ${other_name} is listed on the birth certificate as the child's father, you do not need to complete this program.
   % else:
-  If you are married to or in a civil union with ${other_name} at the time the child is born, they will be presumed to be the biological father. 
+  If you are married to or in a civil union with ${other_name} when the child is born, they will be presumed to be the biological father. 
   
-  If the child is born within 300 days of your marriage or civil union with ${other_name} ending, they are presumed to be the biological father.
+  If the child is born within 300 days of the end of your marriage or civil union with ${other_name}, they will be presumed to be the biological father.
   
-  If their name is listed on the birth certificate as the child's father, you will not need a VAP.
+  If ${other_name} is listed on the birth certificate as the child's father, you will not need a VAP.
   % endif
   % else:
   % if child_born == True:
-  If you were married to or in a civil union with ${ other_name} at the time the child was born, you are presumed to be the biological father. 
+  If you were married to or in a civil union with ${ other_name} when the child was born, you are presumed to be the biological father. 
   
-  If the child was born within 300 days of your marriage or civil union with ${other_name} ending, you are presumed to be the biological father. This means that if you and ${other_name} were married anytime between ${child.birth_date.minus(days=300)} and ${child.birth_date}--and they were not married to anyone else during that time--you should select **Yes**.
+  If the child was born within 300 days of the end of your marriage or civil union with ${other_name}, you are presumed to be the biological father. This means that if you and ${other_name} were married anytime between ${child.birth_date.minus(days=300)} and ${child.birth_date}--and they were not married to anyone else during that time--you should select **Yes**.
   
   If your name is listed on the birth certificate as the child's father, you do not need to complete this program.
   % else:
-  If you are married to or in a civil union with ${other_name} at the time the child is born, you will be presumed to be the biological father. 
+  If you are married to or in a civil union with ${other_name} when the child is born, you will be presumed to be the biological father. 
   
-  If the child is born within 300 days of your marriage or civil union with ${other_name} ending, you will be presumed to be the biological father.
+  If the child is born within 300 days of the end of your marriage or civil union with ${other_name}, you will be presumed to be the biological father.
   
   If your name is listed on the birth certificate as the child's father, you will not need a VAP.
   % endif
@@ -964,49 +902,9 @@ fields:
 ---
 id: user denial witness known
 question: |
-  Do you know who will witness your signature on the Denial of Paternity?
+  Do you know who will witness your signature of the Denial of Paternity?
 fields:
   - no label: user_denial_witness_known
-    datatype: yesnoradio
----
-id: father witness known
-question: |
-  % if user_gender == "mother":
-  Do you know who will witness ${father.name.full(middle='full')}'s signature?
-  % else:
-  Do you know who will witness your signature?
-  % endif
-fields:
-  - no label: dad_witness_known
-    datatype: yesnoradio
----
-id: mother vap witness known
-question: |
-  % if user_gender == "mother":
-  Do you know who will witness your signature of the VAP?
-  % else:
-  Do you know who will witness ${mother.name.full(middle='full')}'s signature of the VAP?
-  % endif
-fields:
-  - no label: mom_witness_known
-    datatype: yesnoradio
----
-id: mother denial witness known
-question: |
-  % if user_gender == "mother":
-  Do you know who will witness your signature of the Denial of Paternity?
-  % else:
-  Do you know who will witness ${mother.name.full(middle='full')}'s signature of the Denial of Paternity?
-  % endif
-fields:
-  - no label: mom_deny_witness_known
-    datatype: yesnoradio
----
-id: husband witness known
-question: |
-  Do you know who will witness ${husband.name.full(middle='full')}'s signature of the Denial of Paternity?
-fields:
-  - no label: husband_witness_known
     datatype: yesnoradio
 ---
 id: user witness name
@@ -1030,249 +928,6 @@ fields:
     required: False
   - Last: user_denial_witness.name.last
   - Suffix: user_denial_witness.name.suffix
-    required: False
-    code: name_suffix()
----
-id: father witness name
-question: |
-  % if user_gender == "mother":
-  Who will witness ${father.name.full(middle='full')}'s signature?
-  % else:
-  Who will witness your signature?
-  % endif
-fields:
-  - First: witnesses[0].name.first
-  - Middle: witnesses[0].name.middle
-    required: False
-  - Last: witnesses[0].name.last
-  - Suffix: witnesses[0].name.suffix
-    required: False
-    code: name_suffix()
----
-depends on:
-  - witnesses[0].name.first
-  - witnesses[0].name.middle
-  - witnesses[0].name.last
-  - witnesses[0].name.suffix
-  - witnesses[0].name_multiple
-  - witnesses[1].name_multiple
-  - witnesses[2].name_multiple
-  - witnesses[3].name_multiple
-  - witnesses[1].name.first
-  - witnesses[1].name.middle
-  - witnesses[1].name.last
-  - witnesses[1].name.suffix
-  - witnesses[2].name.first
-  - witnesses[2].name.middle
-  - witnesses[2].name.last
-  - witnesses[2].name.suffix
-  - witnesses[3].name.first
-  - witnesses[3].name.middle
-  - witnesses[3].name.last
-  - witnesses[3].name.suffix
-  - witnesses[0].address.address
-  - witnesses[1].address.address
-  - witnesses[2].address.address
-  - witnesses[3].address.address
-  - witnesses[0].address.unit
-  - witnesses[1].address.unit
-  - witnesses[2].address.unit
-  - witnesses[3].address.unit
-  - witnesses[0].address.city  
-  - witnesses[1].address.city
-  - witnesses[2].address.city
-  - witnesses[3].address.city
-  - witnesses[0].address.state
-  - witnesses[1].address.state  
-  - witnesses[2].address.state
-  - witnesses[3].address.state
-  - witnesses[0].address.zip
-  - witnesses[1].address.zip
-  - witnesses[2].address.zip
-  - witnesses[3].address.zip
-  - witnesses[0].phone_number
-  - witnesses[1].phone_number
-  - witnesses[2].phone_number
-  - witnesses[3].phone_number
-code: |
-  dummy_variable = 0
-  while dummy_variable < 4:
-    if witnesses[0].name_multiple == "Other":
-      if dummy_variable != 0:
-        if witnesses[dummy_variable].name_multiple == witnesses[0].name.full(middle= 'full'):
-          witnesses[dummy_variable] = witnesses[0]
-    if witnesses[1].name_multiple == "Other":
-      if dummy_variable != 1:
-        if witnesses[dummy_variable].name_multiple == witnesses[1].name.full(middle= 'full'):
-          witnesses[dummy_variable] = witnesses[1]
-    if witnesses[2].name_multiple == "Other":
-      if dummy_variable != 2:
-        if witnesses[dummy_variable].name_multiple == witnesses[2].name.full(middle= 'full'):
-          witnesses[dummy_variable] = witnesses[2]
-    if witnesses[3].name_multiple == "Other":
-      if dummy_variable != 3:
-        if witnesses[dummy_variable].name_multiple == witnesses[3].name.full(middle= 'full'):
-          witnesses[dummy_variable] = witnesses[3]
-    dummy_variable += 1
-  check_those_witnesses = True
----
-code: |
-  dad_witness_answered = False
-  mom_vap_witness_answered = False
-  mom_denial_witness_answered = False
-  husband_witness_answered = False
-  witnesses_start_unknown = True
----
-depends on:
-  - dad_witness_answered
-  - mom_vap_witness_answered
-  - mom_denial_witness_answered
-  - husband_witness_answered
-code: |
- if dad_witness_answered == True:
-   use_a_list = True
- elif mom_vap_witness_answered == True:
-   use_a_list = True
- elif mom_denial_witness_answered == True:
-   use_a_list = True
- elif husband_witness_answered == True:
-   use_a_list = True
- else:
-   use_a_list = False
----
-reconsider: True
-depends on:
-  #- witness_options[0]
-  #- witness_options[1]
-  #- witness_options[2]
-  #- witness_options[3]
-  - witnesses[0].name.first
-  - witnesses[0].name.middle
-  - witnesses[0].name.last
-  - witnesses[0].name.suffix
-  - witnesses[1].name.first
-  - witnesses[1].name.middle
-  - witnesses[1].name.last
-  - witnesses[1].name.suffix
-  - witnesses[2].name.first
-  - witnesses[2].name.middle
-  - witnesses[2].name.last
-  - witnesses[2].name.suffix
-  - witnesses[3].name.first
-  - witnesses[3].name.middle
-  - witnesses[3].name.last
-  - witnesses[3].name.suffix
-  - dad_witness_answered
-  - mom_vap_witness_answered
-  - mom_denial_witness_answered
-  - husband_witness_answered
-code: |
-  options_list = ["Other"]
-  options_list.clear()
-  if dad_witness_answered == True:
-    options_list.append(witnesses[0].name.full(middle='full'))
-  if mom_vap_witness_answered == True:
-    if witnesses[1].name.full(middle='full') != witnesses[0].name.full(middle='full'):
-      options_list.append(witnesses[1].name.full(middle='full'))
-  if mom_denial_witness_answered == True:
-    if witnesses[2].name.full(middle='full') != witnesses[0].name.full(middle='full'):
-      if witnesses[2].name.full(middle='full') != witnesses[1].name.full(middle='full'):
-        options_list.append(witnesses[2].name.full(middle='full'))
-  if husband_witness_answered == True:
-    if witnesses[3].name.full(middle='full') != witnesses[0].name.full(middle='full'):
-      if witnesses[3].name.full(middle='full') != witnesses[1].name.full(middle='full') and witnesses[3].name.full(middle='full') != witnesses[2].name.full(middle='full'):
-        options_list.append(witnesses[3].name.full(middle='full'))
-  options_list.append("Other")
----
-id: mother vap witness name multiple choice
-question: |
-  % if user_gender == "mother":
-  Who will witness ${father.name.full(middle='full')}'s signature of the VAP?
-  % else:
-  Who will witness your signature of the VAP?
-  % endif 
-fields: 
-  - Witness: witnesses[0].name_multiple
-    datatype: radio
-    code: |
-      options_list
----
-id: mother vap witness name multiple choice
-question: |
-  % if user_gender == "mother":
-  Who will witness your signature of the VAP?
-  % else:
-  Who will witness ${mother.name.full(middle='full')}'s signature of the VAP?
-  % endif 
-fields: 
-  - Witness: witnesses[1].name_multiple
-    datatype: radio
-    code: |
-      options_list
----
-id: mother vap witness name entry
-question: |
-  % if user_gender == "mother":
-  Who will witness your signature of the VAP?
-  % else:
-  Who will witness ${mother.name.full(middle='full')}'s signature of the VAP?
-  % endif 
-fields:
-  - First: witnesses[1].name.first
-  - Middle: witnesses[1].name.middle
-    required: False
-  - Last: witnesses[1].name.last
-  - Suffix: witnesses[1].name.suffix
-    required: False
-    code: name_suffix()
----
-id: mother denial witness name multiple choice
-question: |
-  % if user_gender == "mother":
-  Who will witness your signature of the Denial of Paternity?
-  % else:
-  Who will witness ${mother.name.full(middle='full')}'s signature of the Denial of Paternity?
-  % endif 
-fields: 
-  - Witness: witnesses[2].name_multiple
-    datatype: radio
-    code: |
-      options_list
----
-id: mother denial witness name entry
-question: |
-  % if user_gender == "mother":
-  Who will witness your signature of the Denial of Paternity?
-  % else:
-  Who will witness ${mother.name.full(middle='full')}'s signature of the Denial of Paternity?
-  % endif 
-fields:
-  - First: witnesses[2].name.first
-  - Middle: witnesses[2].name.middle
-    required: False
-  - Last: witnesses[2].name.last
-  - Suffix: witnesses[2].name.suffix
-    required: False
-    code: name_suffix()
----
-id: husband witness name multiple choice
-question: |
-  Who will witness ${husband.name.full(middle='full')}'s signature of the VAP?
-fields: 
-  - Witness: witnesses[3].name_multiple
-    datatype: radio
-    code: |
-      options_list
----
-id: mother denial witness name entry
-question: |
-  Who will witness ${husband.name.full(middle='full')}'s signature of the Denial of Paternity?
-fields:
-  - First: witnesses[3].name.first
-  - Middle: witnesses[3].name.middle
-    required: False
-  - Last: witnesses[3].name.last
-  - Suffix: witnesses[3].name.suffix
     required: False
     code: name_suffix()
 ---
@@ -1316,28 +971,6 @@ fields:
   - ZIP code: user_denial_witness.address.zip
     required: False
 ---
-sets:
-  - witnesses[i].address.address
-id: witness address
-question: |
-  What is ${witnesses[i].name.full(middle='full')}'s address?
-subquestion: |
-  If you do not know, leave this question blank.
-fields:
-  - Street address: witnesses[i].address.address
-    address autocomplete: True
-    required: False
-  - Address line 2: witnesses[i].address.unit
-    required: False
-  - City: witnesses[i].address.city
-    required: False
-  - State: witnesses[i].address.state
-    required: False
-    code: |
-      states_list() 
-  - ZIP code: witnesses[i].address.zip
-    required: False
----
 id: user witness phone
 question: |
   What is ${user_witness.name.full(middle='full')}'s phone number?
@@ -1357,24 +990,6 @@ fields:
   - Phone number: user_denial_witness.phone_number
     datatype: al_international_phone
     required: False
----
-sets:
-  - witnesses[i].phone_number
-id: witness phone
-question: |
-  What is ${witnesses[i].name.full(middle='full')}'s phone number?
-subquestion: |
-  If you do not know, leave this question blank.
-fields:
-  - Phone number: witnesses[i].phone_number
-    datatype: al_international_phone
-    required: False
----
-sets:
-  - witnesses[i].in_other_list
-code: |
-  #witness_options.append(witnesses[i].name.full(middle='full'))
-  witnesses[i].in_other_list = True
 ---
 id: denial witness intro
 continue button field: denial_witness_intro
@@ -1801,15 +1416,15 @@ review:
     show if: child_born
   - Edit: were_married
     button: |
-      **Were you married to or in a civil union with ${ other_name} at the time the child was born?**
+      **Were you married to or in a civil union with ${ other_name} at the time the child was born or conceived?**
       ${word(yesno(were_married))}
     show if: child_born
   - Edit: other_marriage
     button: |
       % if user_gender == "mother":
-      **Were you married to or in a civil union with someone else at the time the child was born?**
+      **Were you married to or in a civil union with someone else at the time the child was born or conceived?**
       % else:
-      **Was ${other_name} married to or in a civil union with someone else at the time the child was born?**
+      **Was ${other_name} married to or in a civil union with someone else at the time the child was born or conceived?**
       % endif
       ${word(yesno(other_marriage))}
     show if: were_married == False
@@ -1973,15 +1588,15 @@ review:
     show if: child_born
   - Edit: were_married
     button: |
-      **Were you married to or in a civil union with ${ other_name} at the time the child was born?**
+      **Were you married to or in a civil union with ${ other_name} at the time the child was born or conceived?**
       ${word(yesno(were_married))}
     show if: child_born
   - Edit: other_marriage
     button: |
       % if user_gender == "mother":
-      **Were you married to or in a civil union with someone else at the time the child was born?**
+      **Were you married to or in a civil union with someone else at the time the child was born or conceived?**
       % else:
-      **Was ${other_name} married to or in a civil union with someone else at the time the child was born?**
+      **Was ${other_name} married to or in a civil union with someone else at the time the child was born or conceived?**
       % endif
       ${word(yesno(other_marriage))}
     show if: were_married == False
@@ -2222,7 +1837,7 @@ review:
 id: review denial
 event: section_denial
 question: |
-  Marriage (optional)
+  Previous marriage (optional)
 subquestion: |
   Edit your answers below.
 review:

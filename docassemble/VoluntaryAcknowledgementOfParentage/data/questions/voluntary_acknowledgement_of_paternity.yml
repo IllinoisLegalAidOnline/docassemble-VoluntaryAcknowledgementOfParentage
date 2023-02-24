@@ -328,7 +328,7 @@ question: |
 subquestion: |
   The Voluntary Acknowledgment of Paternity (VAP) may be completed before your child is born, but is not valid until the child is born and the VAP is filed with the Illinios Department of Healthcare and Family Services (HFS).
 
-  You will need to add information about your child's birth and name to the VAP after they are born. Alternatively, you can 
+  You will need to add information about your child's birth and name to the VAP after they are born. Or, if you would prefer, you can:
   * Have both parents add their information to the birth certificate, or
   * Ask for VAP forms at the hospital when the child is born.
 ---
@@ -364,7 +364,7 @@ subquestion: |
   
   If the child is born within 300 days of the end of your marriage or civil union with ${other_name}, they will be presumed to be the biological father.
   
-  If ${other_name} is listed on the birth certificate as the child's father, you will not need a VAP.
+  If ${other_name} is listed on the birth certificate as the child's father, you do not need to complete this program.
   % endif
   % else:
   % if child_born == True:
@@ -378,7 +378,7 @@ subquestion: |
   
   If the child is born within 300 days of the end of your marriage or civil union with ${other_name}, you will be presumed to be the biological father.
   
-  If your name is listed on the birth certificate as the child's father, you will not need a VAP.
+  If your name is listed on the birth certificate as the child's father, you do not need to complete this program.
   % endif
   % endif
 fields:
@@ -1785,9 +1785,9 @@ review:
   - Edit: other_marriage
     button: |
       % if user_gender == "mother":
-      **Were you married to or in a civil union with someone else at the time the child was born?**
+      **Were you married to or in a civil union with someone else at the time the child was born or conceived?**
       % else:
-      **Was ${other_name} married to or in a civil union with someone else at the time the child was born?**
+      **Was ${other_name} married to or in a civil union with someone else at the time the child was born or conceived?**
       % endif
       ${word(yesno(other_marriage))}
     show if: were_married == False
@@ -1844,9 +1844,9 @@ review:
   - Edit: other_marriage
     button: |
       % if user_gender == "mother":
-      **Were you married to or in a civil union with someone else at the time the child was born?**
+      **Were you married to or in a civil union with someone else at the time the child was born or conceived?**
       % else:
-      **Was ${other_name} married to or in a civil union with someone else at the time the child was born?**
+      **Was ${other_name} married to or in a civil union with someone else at the time the child was born or conceived?**
       % endif
       ${word(yesno(other_marriage))}
     show if: were_married == False

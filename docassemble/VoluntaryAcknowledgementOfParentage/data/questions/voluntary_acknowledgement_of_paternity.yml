@@ -52,6 +52,8 @@ code: |
   user_gender
   mother.name.first
   father.name.first
+  if is_certain == False:
+    uncertain_kickout
   if lets_qualify == False:
     qualify_kickout
   if child_born == False:
@@ -203,7 +205,7 @@ continue button field: vap_requirements
 question: |
   Requirements
 subquestion: |
-  To use a Voluntary Acknowledgement of Paternity, you must be a father seeking to acknowledge that you are the parent of a child, or a mother helping the father of your child to acknowledge paternity.
+  To use a Voluntary Acknowledgement of Paternity, you must be a father seeking to acknowledge that you are the parent of a child or a mother helping the father of your child to acknowledge paternity.
   
   To complete this program, you will need to know:
 
@@ -248,6 +250,35 @@ fields:
   - Suffix: father.name.suffix
     required: False
     code: name_suffix()
+---
+id: certain biological father
+question: |
+  % if user_gender == "mother":
+  Are you certain ${father.name.full(middle='full')} is the biological father of the child?
+  % else:
+  Are you certain you are the biological father of the child?
+  % endif
+subquestion: |
+  % if user_gender == "mother":
+  If there is someone other than ${father.name.full(middle='full')} who could be the biological father, you should not sign a VAP.
+  % else:
+  If there is someone other you who could be the biological father, you should not sign a VAP.
+  % endif
+fields:
+  - no label: is_certain
+    datatype: yesnoradio
+---
+id: uncertain kickout
+event: uncertain_kickout
+question: |
+  Sorry
+subquestion: |
+  You should only use this program if you are certain you know who the child's biological father is.
+  
+  A paternity test can help you figure out who the biological father of the child is. [**Read more about paternity tests**](https://www.illinoislegalaid.org/legal-information/paternity-test-basics).
+buttons:
+  - Exit: exit
+  - Restart: restart
 ---
 id: mother name
 question: |
@@ -297,8 +328,12 @@ question: |
 subquestion: |
   % if user_gender == "mother":
   Once legal paternity is shown, ${other_name} will have all the rights of a legal parent, but also the responsibilities of a parent. ${other_name} will have the right to have a relationship with the child, but they will also be responsible for supporting the child financially.
+  
+  A Voluntary Acknowledgement of Paternity is very hard to reverse. You should only use one if you are certain you want ${other_name} to have the rights and responsibilities of a parent.
   % else:
   Once legal paternity is shown, you will have all the rights of a legal parent, but also the responsibilities of a parent. You will have the right to have a relationship with the child, but you will also be responsible for supporting the child financially.
+  
+  A Voluntary Acknowledgement of Paternity is very hard to reverse. You should only use one if you are certain you want to have the rights and responsibilities of a parent.
   % endif
 fields:
   - no label: lets_qualify
@@ -837,10 +872,14 @@ subquestion: |
   Before you can file your forms, you and your spouse or ex-spouse need to sign a Denial of Paternity form.
   
   You will need to know your spouse or ex-spouse's address, their birth date and place of birth, and the date when you were married. If you do not enter this information now, you will have to add it to the Denial of Paternity form before you mail the forms to the state.
+  
+  If your spouse or ex-spouse has previously signed a VAP saying they are the parent of the child they cannot sign a Denial of Paternity. If that is the case, you may need to [**Get Legal Help**](https://www.illinoislegalaid.org/get-legal-help).
   % else:
   Before you can file your forms, ${other_name} and their spouse or ex-spouse need to sign a Denial of Paternity form.
   
   You will need to know ${other_name}'s spouse or ex-spouse's name, address, their birth date and place of birth, and the date when they and ${other_name} were married. If you do not enter this information now, you will have to add it to the Denial of Paternity form before you mail the forms to the state.
+  
+  If ${other_name}'s spouse or ex-spouse has previously signed a VAP saying they are the parent of the child they cannot sign a Denial of Paternity. If that is the case, you may need to [**Get Legal Help**](https://www.illinoislegalaid.org/get-legal-help).
   % endif
 ---
 id: marriage date

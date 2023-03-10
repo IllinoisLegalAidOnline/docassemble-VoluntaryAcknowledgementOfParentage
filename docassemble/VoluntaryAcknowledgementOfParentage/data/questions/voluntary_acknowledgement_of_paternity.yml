@@ -815,7 +815,7 @@ choices:
   - Female
   - X: X
     help: |
-      Illinois currently allows birth certificates to list X as a gender marker, but the VAP form has not been updated to reflect this. If you select X on this question, the gender marker on the VAP form will be left blank.
+      Illinois currently allows birth certificates to list X as a gender marker. If you select X on this question, an "X" option will be added to the VAP form.
 ---
 template: gender_x
 subject: |
@@ -1187,6 +1187,8 @@ attachment:
       - "mother_witness_name": ${user_witness.name.full(middle='full') if user_gender == "mother" else ""}
       - "mother_witness_address": ${user_witness.address.on_one_line() if user_gender == "mother" else ""}
       - "mother_witness_phone": ${phone_number_formatted(user_witness.phone_number) if user_gender == "mother" else ""}
+      - "x_check": ${ True if child.gender == "X" else False}
+      - "x_text": ${ "X" if child.gender == "X" else ""}
 ---
 attachment:
   - name: Denial of paternity
@@ -1258,6 +1260,8 @@ attachment:
       - "mother_witness_name": ${user_denial_witness.name.full(middle='full') if user_gender == "mother" else ""}
       - "mother_witness_address": ${user_denial_witness.address.on_one_line() if user_gender == "mother" else ""}
       - "mother_witness_phone": ${phone_number_formatted(user_denial_witness.phone_number) if user_gender == "mother" else ""}
+      - "x_check": ${ True if child.gender == "X" else False}
+      - "x_text": ${ "X" if child.gender == "X" else ""}
 ---
 attachment:
   - name: instructions

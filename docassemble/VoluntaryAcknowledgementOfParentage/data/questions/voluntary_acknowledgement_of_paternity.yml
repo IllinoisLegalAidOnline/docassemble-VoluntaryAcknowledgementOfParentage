@@ -62,6 +62,8 @@ code: |
     child.birth_date
   if were_married == False:
     other_marriage
+  else:
+    married_kickout
   set_progress(20)
   #if child_born == True:
   if on_certificate == True:
@@ -140,7 +142,7 @@ subquestion: |
 
   This program helps you create documents to tell the state who a child's biological father is. The form it creates is called a Voluntary Acknowledgement of Paternity, also called a VAP.
   
-   Once legal paternity is shown, the biological father will have all the rights and responsiblities of a legal parent. The father will have the right to have a relationship with the child, but they will also be responsible for supporting the child financially.
+   Once legal paternity is established, the biological father will have all the rights and responsiblities of a legal parent. The father will have the right to have a relationship with the child, but they will also be responsible for supporting the child financially.
   
   The form you create can only be used in Illinois.
 field: sees_nav_bar
@@ -217,7 +219,7 @@ subquestion: |
   * The mother's spouse or ex-spouse's address, birth date, and birth place, and
   * The date of their marriage. 
   
-  Note: this program can only be used if both biological parents agree and can sign the forms. If the parents do not agree, you must ask a court to establish paternity. To learn more, read ILAO's article about [**starting a court case to establish paternity**](https://www.illinoislegalaid.org/legal-information/starting-case-parentage-court).
+  Note: this program can only be used if both biological parents agree and can sign the forms. If the mother's spouse or ex-spouse were married within 300 days of the child's birth, the spouse or ex-spouse must also agree. If the parents do not agree, you must ask a court to establish paternity. To learn more, read ILAO's article about [**starting a court case to establish paternity**](https://www.illinoislegalaid.org/legal-information/starting-case-parentage-court).
 ---
 id: user gender
 question: |
@@ -260,9 +262,9 @@ question: |
   % endif
 subquestion: |
   % if user_gender == "mother":
-  If there is someone other than ${father.name.full(middle='full')} who could be the biological father, you should not sign a VAP.
+  If there is someone other than ${father.name.full(middle='full')} who could be the biological father, you should select **No**.
   % else:
-  If there is someone other you who could be the biological father, you should not sign a VAP.
+  If there is someone other than you who could be the biological father, you should select **No**.
   % endif
 fields:
   - no label: is_certain
@@ -276,6 +278,20 @@ subquestion: |
   You should only use this program if you are certain you know who the child's biological father is.
   
   A paternity test can help you figure out who the biological father of the child is. [**Read more about paternity tests**](https://www.illinoislegalaid.org/legal-information/paternity-test-basics).
+buttons:
+  - Exit: exit
+  - Restart: restart
+---
+id: married kickout
+event: married_kickout
+question: |
+  Sorry
+subquestion: |
+  You should not use this program if you are married to or in a civil union with ${other_name}.
+  
+  If you were married at the time of birth or conception, you should contact the [**Illinois Department of Public Health to correct the child's birth certificate**](https://dph.illinois.gov/topics-services/birth-death-other-records/birth-records/correct-birth-certificate.html).
+  
+  If you married after the child was born, you should go through the legitimation process. Read more about [**legitimation from the Illinois Department of Public Health**](https://dph.illinois.gov/topics-services/birth-death-other-records/birth-records/legitimation.html).
 buttons:
   - Exit: exit
   - Restart: restart
@@ -327,13 +343,13 @@ question: |
   % endif
 subquestion: |
   % if user_gender == "mother":
-  Once legal paternity is shown, ${other_name} will have all the rights of a legal parent, but also the responsibilities of a parent. ${other_name} will have the right to have a relationship with the child, but they will also be responsible for supporting the child financially.
+  Once legal paternity is established, ${other_name} will have all the rights of a legal parent, but also the responsibilities of a parent. ${other_name} will have the right to have a relationship with the child, but they will also be responsible for supporting the child financially.
   
-  A Voluntary Acknowledgement of Paternity is very hard to reverse. You should only use one if you are certain you want ${other_name} to have the rights and responsibilities of a parent.
+  A Voluntary Acknowledgement of Paternity is very hard to reverse. A DNA test stating ${other_name} is not the child's parent may not be enough to undo it. You should only use one if you are certain you want ${other_name} to have the rights and responsibilities of a parent.
   % else:
   Once legal paternity is shown, you will have all the rights of a legal parent, but also the responsibilities of a parent. You will have the right to have a relationship with the child, but you will also be responsible for supporting the child financially.
   
-  A Voluntary Acknowledgement of Paternity is very hard to reverse. You should only use one if you are certain you want to have the rights and responsibilities of a parent.
+  A Voluntary Acknowledgement of Paternity is very hard to reverse. A DNA test stating you are not the child's parent may not be enough to undo it. You should only use one if you are certain you want to have the rights and responsibilities of a parent.
   % endif
 fields:
   - no label: lets_qualify
@@ -465,9 +481,13 @@ subquestion: |
   % if user_gender == "mother":
   If you were married or in a civil union at the time the child was born, your spouse or ex-spouse must sign a Denial of Paternity form. You will get a completed copy of this form when you finish, but it will need to be signed by you and your spouse or ex-spouse.
   
+  If the marriage or civil union has ended and you have a Judgment for Dissolution of Marriage that states your ex-spouse is not the father of your child, you can select **No**. However, you will need to include a copy of the Judgment for Dissolution of Marriage with the VAP.
+  
   If the child was born within 300 days of your marriage or civil union with somebody ending, they are presumed to be the biological father. This means that if you were married or in a civil union with someone other than ${other_name} anytime between ${child.birth_date.minus(days=300)} and ${child.birth_date} you should select **Yes**.
   % else:
   If ${ other_name} was married or in a civil union at the time the child was born, the spouse or ex-spouse must fill out and sign a Denial of Paternity form. You will get a completed copy of this form when you finish, but it will need to be signed by ${other_name}'s spouse or ex-spouse.
+  
+  If the marriage or civil union has ended and you have a Judgment for Dissolution of Marriage that states ${other_name}'s ex-spouse is not the father of the child, you can select **No**. However, you will need to include a copy of the Judgment for Dissolution of Marriage with the VAP.
   
   If the child was born within 300 days of ${other_name}'s marriage or civil union with someone, they are presumed to be the biological father. This means that if ${other_name} was married or in a civil union with someone other than you anytime between ${child.birth_date.minus(days=300)} and ${child.birth_date} you should select **Yes**.
   % endif
@@ -929,7 +949,7 @@ content: |
   The witness must be an adult age 18 or older but cannot be you, ${other_name}, or the spouse or ex-spouse signing the Denial of Paternity.
   % endif
   % else:
-  The witness must be an adult age 18 or older but cannot be you, or {other_name}.
+  The witness must be an adult age 18 or older but cannot be you, or ${other_name}.
   % endif
 ---
 id: user witness known

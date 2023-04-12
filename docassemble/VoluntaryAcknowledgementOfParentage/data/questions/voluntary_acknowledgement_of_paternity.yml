@@ -48,6 +48,7 @@ code: |
   how_to_use
   accept_terms
   vap_requirements
+  more_vap_requirements
   nav.set_section('section_vap')
   user_gender
   mother.name.first
@@ -140,7 +141,7 @@ question: |
 subquestion: |
   Welcome to Illinois Legal Aid Online's **Voluntary Acknowledgement of Paternity - VAP** Easy Form.
 
-  This program helps you create documents to tell the state who a child's biological father is. The form it creates is called a Voluntary Acknowledgement of Paternity, also called a VAP.
+  This program helps you create documents to tell the state who a child's biological father is. The form it creates is a Voluntary Acknowledgement of Paternity, also called a VAP.
   
    Once legal paternity is established, the biological father will have all the rights and responsiblities of a legal parent. The father will have the right to have a relationship with the child, but they will also be responsible for supporting the child financially.
   
@@ -207,13 +208,23 @@ continue button field: vap_requirements
 question: |
   Requirements
 subquestion: |
-  To use a Voluntary Acknowledgement of Paternity, you must be a father seeking to acknowledge that you are the parent of a child or a mother helping the father of your child to acknowledge paternity.
+  To use a Voluntary Acknowledgement of Paternity, you must be either a:
+  
+  * Father seeking to acknowledge that you are the parent of a child, or 
+  * Mother helping the father of your child to acknowledge paternity.
+  
+  The VAP is used by the father, but either parent can use this program to create the form. 
   
   To complete this program, you will need to know:
 
   * The other parent's address, birth date, and birth place, and
   * The child's name and birthdate.
-  
+---
+id: more vap requirements
+continue button field: more_vap_requirements
+question: |
+  Additional requirements
+subquestion: |
   If the child's mother was married to someone else when the child was conceived or born, you need to know:
   
   * The mother's spouse or ex-spouse's address, birth date, and birth place, and
@@ -289,7 +300,7 @@ question: |
 subquestion: |
   You should not use this program if you are married to or in a civil union with ${other_name}.
   
-  If you were married at the time of birth or conception, you should contact the [**Illinois Department of Public Health to correct the child's birth certificate**](https://dph.illinois.gov/topics-services/birth-death-other-records/birth-records/correct-birth-certificate.html).
+  If you were married when the child was born or conceived, you should contact the [**Illinois Department of Public Health to correct the child's birth certificate**](https://dph.illinois.gov/topics-services/birth-death-other-records/birth-records/correct-birth-certificate.html).
   
   If you married after the child was born, you should go through the legitimation process. Read more about [**legitimation from the Illinois Department of Public Health**](https://dph.illinois.gov/topics-services/birth-death-other-records/birth-records/legitimation.html).
 buttons:
@@ -401,13 +412,18 @@ code: |
 ---
 id: marriage check
 question: |
-  Were you married to or in a civil union with ${ other_name} at the time the child was born or conceived?
+  Were you married to or in a civil union with ${ other_name} when the child was born or conceived?
 subquestion: |
   % if user_gender == "mother":
   % if child_born == True:
   If you were married to or in a civil union with ${other_name} when the child was born, they are presumed to be the biological father. 
   
-  If the child was born within 300 days of the end of your marriage or civil union with ${other_name}, they are presumed to be the biological father. This means that if you and ${other_name} were married anytime between ${child.birth_date.minus(days=300)} and ${child.birth_date}--and you were not married to anyone else during that time--you should select **Yes**.
+  If the child was born within 300 days of the end of your marriage or civil union with ${other_name}, they are presumed to be the biological father.
+  
+  You should select **Yes** if:
+  
+  * You and ${other_name} were married anytime between ${child.birth_date.minus(days=300)} and ${child.birth_date}, and
+  * You were not married to anyone else during that time.
   
   If ${other_name} is listed on the birth certificate as the child's father, you do not need to complete this program.
   % else:
@@ -421,7 +437,12 @@ subquestion: |
   % if child_born == True:
   If you were married to or in a civil union with ${ other_name} when the child was born, you are presumed to be the biological father. 
   
-  If the child was born within 300 days of the end of your marriage or civil union with ${other_name}, you are presumed to be the biological father. This means that if you and ${other_name} were married anytime between ${child.birth_date.minus(days=300)} and ${child.birth_date}--and they were not married to anyone else during that time--you should select **Yes**.
+  If the child was born within 300 days of the end of your marriage or civil union with ${other_name}, you are presumed to be the biological father.
+  
+  You should select **Yes** if: 
+  
+  * You and ${other_name} were married anytime between ${child.birth_date.minus(days=300)} and ${child.birth_date}, and
+  * ${other_name} was not married to anyone else during that time.
   
   If your name is listed on the birth certificate as the child's father, you do not need to complete this program.
   % else:
@@ -472,24 +493,21 @@ buttons:
 id: other marriage
 question: |
   % if user_gender == "mother":
-  Were you married to or in a civil union with someone else at the time the child was born or conceived?
+  Were you married to or in a civil union with someone else when the child was born or conceived?
   % else:
-  Was ${other_name} married to or in a civil union with someone else at the time the child was born or conceived?
+  Was ${other_name} married to or in a civil union with someone else when the child was born or conceived?
   % endif
 subquestion: |
   % if child_born == True:
   % if user_gender == "mother":
-  If you were married or in a civil union at the time the child was born, your spouse or ex-spouse must sign a Denial of Paternity form. You will get a completed copy of this form when you finish, but it will need to be signed by you and your spouse or ex-spouse.
+  If you were married or in a civil union when the child was born, your spouse or ex-spouse must sign a Denial of Paternity form. You will get a completed copy of this form when you finish. It will need to be signed by you and your spouse or ex-spouse.
   
-  If the marriage or civil union has ended and you have a Judgment for Dissolution of Marriage that states your ex-spouse is not the father of your child, you can select **No**. However, you will need to include a copy of the Judgment for Dissolution of Marriage with the VAP.
+  If the child was born within 300 days of your marriage or civil union with somebody ending, they are presumed to be the biological father. You should select **Yes** if you were married or in a civil union with someone other than ${other_name} anytime between ${child.birth_date.minus(days=300)} and ${child.birth_date}.
   
-  If the child was born within 300 days of your marriage or civil union with somebody ending, they are presumed to be the biological father. This means that if you were married or in a civil union with someone other than ${other_name} anytime between ${child.birth_date.minus(days=300)} and ${child.birth_date} you should select **Yes**.
   % else:
-  If ${ other_name} was married or in a civil union at the time the child was born, the spouse or ex-spouse must fill out and sign a Denial of Paternity form. You will get a completed copy of this form when you finish, but it will need to be signed by ${other_name}'s spouse or ex-spouse.
+  If ${ other_name} was married or in a civil union when the child was born, the spouse or ex-spouse must fill out and sign a Denial of Paternity form. You will get a completed copy of this form when you finish. It will need to be signed by ${other_name}'s spouse or ex-spouse.
   
-  If the marriage or civil union has ended and you have a Judgment for Dissolution of Marriage that states ${other_name}'s ex-spouse is not the father of the child, you can select **No**. However, you will need to include a copy of the Judgment for Dissolution of Marriage with the VAP.
-  
-  If the child was born within 300 days of ${other_name}'s marriage or civil union with someone, they are presumed to be the biological father. This means that if ${other_name} was married or in a civil union with someone other than you anytime between ${child.birth_date.minus(days=300)} and ${child.birth_date} you should select **Yes**.
+  If the child was born within 300 days of ${other_name}'s marriage or civil union with someone, they are presumed to be the biological father. You should select **Yes** if ${other_name} was married or in a civil union with someone other than you anytime between ${child.birth_date.minus(days=300)} and ${child.birth_date}.
   % endif
   % else:
   % if user_gender == "mother":
@@ -498,9 +516,25 @@ subquestion: |
   If ${ other_name} was married or in a civil union within 300 days of the child's upcoming birth, the spouse or ex-spouse must fill out and sign a Denial of Paternity form. You will get a completed copy of this form when you finish, but it will need to be signed by ${other_name}'s spouse or ex-spouse.
   % endif
   % endif
+  ${collapse_template(dissolution_info)}
 fields:
   - no label: other_marriage
     datatype: yesnoradio
+---
+template: dissolution_info
+subject: |
+  % if user_gender == "mother":
+  **What if I have a court judgment saying my ex-spouse is not the father?**
+  % else:
+  **What if ${other_name} has a court judgment saying their ex-spouse is not the father?**
+  % endif
+
+content: |  
+  % if user_gender == "father":
+  If the marriage or civil union has ended and you have a Judgment for Dissolution of Marriage that states ${other_name}'s ex-spouse is not the father of the child, you can select **No**. However, you will need to include a copy of the Judgment for Dissolution of Marriage with the VAP.
+  % else:
+  If the marriage or civil union has ended and you have a Judgment for Dissolution of Marriage that states your ex-spouse is not the father of your child, you can select **No**. However, you will need to include a copy of the Judgment for Dissolution of Marriage with the VAP.
+  % endif
 ---
 id: father birthdate
 question: |
@@ -913,7 +947,7 @@ subquestion: |
   If you do not know, leave this question blank.
 fields:
   - Date: marriage_date
-    datatype: date
+    datatype: ThreePartsDate
     required: False
     min: ${mother.birth_date.plus(years=10)}
     max: ${ today() }
@@ -1157,9 +1191,9 @@ attachment:
           % if in_hospital == True:
           ${ hospital_name}
           % else:
-          ${child.address.line_one()}
+          ${child.address.line_one(bare=True )}
           % endif
-      - "child_address_two": ${child.address.city + ", " + child.address.county + " Co., " + child.address.state}
+      - "child_address_two": ${child.address.city + ", " + child.address.county + ", " + child.address.state}
       - "father_name_first": ${father.name.first}
       - "father_name_middle": ${father.name.middle if father.name.middle != "" else ""}
       - "father_name_last": ${father.name.last}
@@ -1176,7 +1210,7 @@ attachment:
           % endif
       - "father_dob": ${father.birth_date}
       - "father_ssn": ${father.ssn}
-      - "father_address_one": ${father.address.line_one()}
+      - "father_address_one": ${father.address.line_one(bare=True )}
       - "father_address_two": ${father.address.line_two()}
       - "father_phone": ${phone_number_formatted(father.phone_number)}
       - "mother_name_first": ${mother.name.first}
@@ -1195,17 +1229,17 @@ attachment:
           % endif
       - "mother_dob": ${mother.birth_date}
       - "mother_ssn": ${mother.ssn}
-      - "mother_address_one": ${mother.address.line_one()}
+      - "mother_address_one": ${mother.address.line_one(bare=True )}
       - "mother_address_two": ${mother.address.line_two()}
       - "mother_phone": ${phone_number_formatted(mother.phone_number)}
       - "was_married": ${other_marriage}
       - "was_not_married": ${False if other_marriage == True else True}
       - "husband_name": ${husband.name.full(middle='full')}
       - "father_witness_name": ${user_witness.name.full(middle='full') if user_gender == "father" else ""}
-      - "father_witness_address": ${user_witness.address.on_one_line() if user_gender == "father" else ""}
+      - "father_witness_address": ${user_witness.address.on_one_line(bare=True ) if user_gender == "father" else ""}
       - "father_witness_phone": ${phone_number_formatted(user_witness.phone_number) if user_gender == "father" else ""}
       - "mother_witness_name": ${user_witness.name.full(middle='full') if user_gender == "mother" else ""}
-      - "mother_witness_address": ${user_witness.address.on_one_line() if user_gender == "mother" else ""}
+      - "mother_witness_address": ${user_witness.address.on_one_line(bare=True ) if user_gender == "mother" else ""}
       - "mother_witness_phone": ${phone_number_formatted(user_witness.phone_number) if user_gender == "mother" else ""}
       - "x_check": ${ True if child.gender == "X" else False}
       - "x_text": ${ "X" if child.gender == "X" else ""}
@@ -1229,9 +1263,9 @@ attachment:
           % if in_hospital == True:
           ${ hospital_name}
           % else:
-          ${child.address.line_one()}
+          ${child.address.line_one(bare=True )}
           % endif
-      - "child_address_two": ${child.address.city + ", " + child.address.county + " Co., " + child.address.state}
+      - "child_address_two": ${child.address.city + ", " + child.address.county + ", " + child.address.state}
       - "husband_name_first": ${husband.name.first}
       - "husband_name_middle": ${husband.name.middle}
       - "husband_name_last": ${husband.name.last}
@@ -1248,7 +1282,7 @@ attachment:
           % endif
       - "husband_dob": ${husband.birth_date}
       - "husband_ssn": ${husband.ssn}
-      - "husband_address_one": ${husband.address.line_one()}
+      - "husband_address_one": ${husband.address.line_one(bare=True )}
       - "husband_address_two": ${husband.address.line_two()}
       - "husband_phone": ${phone_number_formatted(husband.phone_number)}
       - "mother_name_first": ${mother.name.first}
@@ -1267,7 +1301,7 @@ attachment:
           % endif
       - "mother_dob": ${mother.birth_date}
       - "mother_ssn": ${mother.ssn}
-      - "mother_address_one": ${mother.address.line_one()}
+      - "mother_address_one": ${mother.address.line_one(bare=True )}
       - "mother_address_two": ${mother.address.line_two()}
       - "mother_phone": ${phone_number_formatted(mother.phone_number)}
       - "marriage_date": ${marriage_date}
@@ -1275,10 +1309,10 @@ attachment:
       - "was_not_married": ${False if other_marriage == True else True}
       - "husband_name": ${husband.name.full(middle='full')}
       - "husband_witness_name": ${witnesses[3].name.full(middle='full')}
-      - "husband_witness_address": ${witnesses[3].address.on_one_line()}
+      - "husband_witness_address": ${witnesses[3].address.on_one_line(bare=True )}
       - "husband_witness_phone": ${phone_number_formatted(witnesses[3].phone_number)}
       - "mother_witness_name": ${user_denial_witness.name.full(middle='full') if user_gender == "mother" else ""}
-      - "mother_witness_address": ${user_denial_witness.address.on_one_line() if user_gender == "mother" else ""}
+      - "mother_witness_address": ${user_denial_witness.address.on_one_line(bare=True ) if user_gender == "mother" else ""}
       - "mother_witness_phone": ${phone_number_formatted(user_denial_witness.phone_number) if user_gender == "mother" else ""}
       - "x_check": ${ True if child.gender == "X" else False}
       - "x_text": ${ "X" if child.gender == "X" else ""}
@@ -1479,15 +1513,15 @@ review:
     show if: child_born
   - Edit: were_married
     button: |
-      **Were you married to or in a civil union with ${ other_name} at the time the child was born or conceived?**
+      **Were you married to or in a civil union with ${ other_name} when the child was born or conceived?**
       ${word(yesno(were_married))}
     show if: child_born
   - Edit: other_marriage
     button: |
       % if user_gender == "mother":
-      **Were you married to or in a civil union with someone else at the time the child was born or conceived?**
+      **Were you married to or in a civil union with someone else when the child was born or conceived?**
       % else:
-      **Was ${other_name} married to or in a civil union with someone else at the time the child was born or conceived?**
+      **Was ${other_name} married to or in a civil union with someone else when the child was born or conceived?**
       % endif
       ${word(yesno(other_marriage))}
     show if: were_married == False
@@ -1498,7 +1532,7 @@ review:
     show if: child_born
   - Edit: child.gender
     button: |
-      **${ child.name.full(middle='full')}'s legal gender:**
+      **${ child.name.full(middle='full')}'s gender on birth certificate:**
       ${child.gender}
     show if: child_born
   - Edit: in_hospital
@@ -1651,15 +1685,15 @@ review:
     show if: child_born
   - Edit: were_married
     button: |
-      **Were you married to or in a civil union with ${ other_name} at the time the child was born or conceived?**
+      **Were you married to or in a civil union with ${ other_name} when the child was born or conceived?**
       ${word(yesno(were_married))}
     show if: child_born
   - Edit: other_marriage
     button: |
       % if user_gender == "mother":
-      **Were you married to or in a civil union with someone else at the time the child was born or conceived?**
+      **Were you married to or in a civil union with someone else when the child was born or conceived?**
       % else:
-      **Was ${other_name} married to or in a civil union with someone else at the time the child was born or conceived?**
+      **Was ${other_name} married to or in a civil union with someone else when the child was born or conceived?**
       % endif
       ${word(yesno(other_marriage))}
     show if: were_married == False
@@ -1848,9 +1882,9 @@ review:
   - Edit: other_marriage
     button: |
       % if user_gender == "mother":
-      **Were you married to or in a civil union with someone else at the time the child was born or conceived?**
+      **Were you married to or in a civil union with someone else when the child was born or conceived?**
       % else:
-      **Was ${other_name} married to or in a civil union with someone else at the time the child was born or conceived?**
+      **Was ${other_name} married to or in a civil union with someone else when the child was born or conceived?**
       % endif
       ${word(yesno(other_marriage))}
     show if: were_married == False
@@ -1873,7 +1907,7 @@ review:
     show if: child_born
   - Edit: child.gender
     button: |
-      **${ child.name.full(middle='full')}'s legal gender:**
+      **${ child.name.full(middle='full')}'s gender on birth certificate:**
       ${child.gender}
     show if: child_born
   - Edit: child.birth_date
@@ -1907,9 +1941,9 @@ review:
   - Edit: other_marriage
     button: |
       % if user_gender == "mother":
-      **Were you married to or in a civil union with someone else at the time the child was born or conceived?**
+      **Were you married to or in a civil union with someone else when the child was born or conceived?**
       % else:
-      **Was ${other_name} married to or in a civil union with someone else at the time the child was born or conceived?**
+      **Was ${other_name} married to or in a civil union with someone else when the child was born or conceived?**
       % endif
       ${word(yesno(other_marriage))}
     show if: were_married == False

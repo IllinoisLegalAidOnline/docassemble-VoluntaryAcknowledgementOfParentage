@@ -60,15 +60,14 @@ code: |
   if child_born == False:
     not_yet_born
   else:
+    if on_certificate == True:
+      certificate_kickout
     child.birth_date
   if were_married == False:
     other_marriage
   else:
     married_kickout
   set_progress(20)
-  #if child_born == True:
-  if on_certificate == True:
-    certificate_kickout
   nav.set_section('section_mother')
   mother.birth_date
   mother.address.address
@@ -230,7 +229,9 @@ subquestion: |
   * The mother's spouse or ex-spouse's address, birth date, and birth place, and
   * The date of their marriage. 
   
-  Note: this program can only be used if both biological parents agree and can sign the forms. If the mother's spouse or ex-spouse were married within 300 days of the child's birth, the spouse or ex-spouse must also agree. If the parents do not agree, you must ask a court to establish paternity. To learn more, read ILAO's article about [**starting a court case to establish paternity**](https://www.illinoislegalaid.org/legal-information/starting-case-parentage-court).
+  Note: this program can only be used if both biological parents agree and can sign the forms. If the mother's spouse or ex-spouse were married within 300 days of the child's birth, the spouse or ex-spouse must also agree. If the parents do not agree, you must ask a court to establish paternity. 
+  
+  To learn more, read ILAO's article about [**starting a court case to establish paternity**](https://www.illinoislegalaid.org/legal-information/starting-case-parentage-court).
 ---
 id: user gender
 question: |
@@ -869,7 +870,7 @@ choices:
   - Female
   - X: X
     help: |
-      Illinois currently allows birth certificates to list X as a gender marker. If you select X on this question, an "X" option will be added to the VAP form.
+      Illinois allows birth certificates to list X as a gender marker. If you select X on this question, an "X" option will be added to the VAP form.
 ---
 template: gender_x
 subject: |
@@ -1193,7 +1194,7 @@ attachment:
           % else:
           ${child.address.line_one(bare=True )}
           % endif
-      - "child_address_two": ${child.address.city + ", " + child.address.county + ", " + child.address.state}
+      - "child_address_two": ${child.address.city + ", " + end_in_county(child.address.county) + ", " + child.address.state}
       - "father_name_first": ${father.name.first}
       - "father_name_middle": ${father.name.middle if father.name.middle != "" else ""}
       - "father_name_last": ${father.name.last}
@@ -1265,7 +1266,7 @@ attachment:
           % else:
           ${child.address.line_one(bare=True )}
           % endif
-      - "child_address_two": ${child.address.city + ", " + child.address.county + ", " + child.address.state}
+      - "child_address_two": ${child.address.city + ", " + end_in_county(child.address.county) + ", " + child.address.state}
       - "husband_name_first": ${husband.name.first}
       - "husband_name_middle": ${husband.name.middle}
       - "husband_name_last": ${husband.name.last}
@@ -1543,12 +1544,12 @@ review:
   - Edit: hospital_name
     button: |
       **${child.name.full(middle='full')}'s birth place:**
-      ${hospital_name}, ${child.address.city}, ${child.address.county} County, ${child.address.state}
+      ${hospital_name}, ${child.address.city}, ${end_in_county(child.address.county)}, ${child.address.state}
     show if: child_born == True and in_hospital == True
   - Edit: child.address.address
     button: |
       **${child.name.full(middle='full')}'s birth place:**
-      ${child.address.on_one_line(bare=True)}, ${child.address.county} County
+      ${child.address.on_one_line(bare=True)}, ${end_in_county(child.address.county)}
     show if: child_born == True and in_hospital == False
   - Edit: husband.name.first
     button: |
@@ -1567,7 +1568,7 @@ review:
   - Edit: husband.address.address
     button: |
       **${husband.name.full(middle='full')}'s address:**
-      ${father.address.on_one_line(bare=True)}
+      ${husband.address.on_one_line(bare=True)}
     show if: other_marriage
   - Edit: husband.ssn
     button: |
@@ -1923,12 +1924,12 @@ review:
   - Edit: hospital_name
     button: |
       **${child.name.full(middle='full')}'s birth place:**
-      ${hospital_name}, ${child.address.city}, ${child.address.county} County, ${child.address.state}
+      ${hospital_name}, ${child.address.city}, ${end_in_county(child.address.county)}, ${child.address.state}
     show if: child_born == True and in_hospital == True
   - Edit: child.address.address
     button: |
       **${child.name.full(middle='full')}'s birth place:**
-      ${child.address.on_one_line(bare=True)}, ${child.address.county} County
+      ${child.address.on_one_line(bare=True)}, ${end_in_county(child.address.county)}
     show if: child_born == True and in_hospital == False
 ---
 id: review denial
@@ -1964,7 +1965,7 @@ review:
   - Edit: husband.address.address
     button: |
       **${husband.name.full(middle='full')}'s address:**
-      ${father.address.on_one_line(bare=True)}
+      ${husband.address.on_one_line(bare=True)}
     show if: other_marriage
   - Edit: husband.ssn
     button: |

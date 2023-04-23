@@ -547,6 +547,7 @@ question: |
 fields:
   - Birth date: father.birth_date
     datatype: ThreePartsDate
+    #alMax: ${today()}
 ---
 id: mother birthdate
 question: |
@@ -1648,6 +1649,8 @@ review:
       ${phone_number_formatted(user_denial_witness.phone_number)}
     show if: user_denial_witness_known == True and user_gender == "mother"
 ---
+need:
+  - end_in_county
 id: review vap
 event: section_vap
 question: |
@@ -1890,6 +1893,8 @@ review:
       ${word(yesno(other_marriage))}
     show if: were_married == False
 ---
+need:
+  - end_in_county
 id: review child
 event: section_child
 question: |

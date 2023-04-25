@@ -517,6 +517,7 @@ subquestion: |
   If ${ other_name} was married or in a civil union within 300 days of the child's upcoming birth, the spouse or ex-spouse must fill out and sign a Denial of Paternity form. You will get a completed copy of this form when you finish, but it will need to be signed by ${other_name}'s spouse or ex-spouse.
   % endif
   % endif
+  
   ${collapse_template(dissolution_info)}
 fields:
   - no label: other_marriage
@@ -946,13 +947,15 @@ question: |
   When did ${other_name} and ${ husband.name.full(middle='full')} marry or enter into a civil union?
   % endif
 subquestion: |
+  % if user_gender != "mother":
   If you do not know, leave this question blank.
+  % endif
 fields:
   - Date: marriage_date
     datatype: ThreePartsDate
     required: False
-    min: ${mother.birth_date.plus(years=10)}
-    max: ${ today() }
+    #min: ${mother.birth_date.plus(years=10)}
+    #max: ${ today() }
 ---
 id: witness intro
 continue button field: witness_intro

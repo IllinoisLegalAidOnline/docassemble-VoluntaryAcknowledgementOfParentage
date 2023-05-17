@@ -103,7 +103,7 @@ code: |
   set_progress(60)
   if other_marriage == True:
     denial_intro
-    if user_gender == "mother" or husband_known == True:
+    if user_gender == "mother" and husband_known == True:
       husband.name.first
       marriage_date
       husband.birth_date
@@ -794,6 +794,7 @@ question: |
 fields:
   - Street address: father.birth_address
     address autocomplete: False
+    required: False
   - Address line 2: father.birth_unit
     required: False
   - City: father.birth_city
@@ -809,6 +810,7 @@ question: |
 fields:
   - Street address: mother.birth_address
     address autocomplete: False
+    required: False
   - Address line 2: mother.birth_unit
     required: False
   - City: mother.birth_city
@@ -1208,7 +1210,11 @@ attachment:
           ${father.birth_city + ", " + father.birth_state}
           % else:
           % if father.birth_unit == "":
+          % if father.birth_address != "":
           ${father.birth_address + ", " + father.birth_city + ", " + father.birth_country}
+          % else:
+          ${father.birth_city + ", " + father.birth_country}
+          % endif
           % else:
           ${father.birth_address + ", " + father.birth_unit + ", " + father.birth_city + ", " + father.birth_country}
           % endif
@@ -1227,7 +1233,11 @@ attachment:
           ${mother.birth_city + ", " + mother.birth_state}
           % else:
           % if mother.birth_unit == "":
+          % if mother.birth_address != "":
           ${mother.birth_address + ", " + mother.birth_city + ", " + mother.birth_country}
+          % else:
+          ${mother.birth_city + ", " + mother.birth_country}
+          % endif
           % else:
           ${mother.birth_address + ", " + mother.birth_unit + ", " + mother.birth_city + ", " + mother.birth_country}
           % endif
@@ -1277,12 +1287,50 @@ attachment:
       - "husband_name_suffix": ${husband.name.suffix if husband.name.suffix != "" else ""}
       - "husband_birthplace": |
           % if husband.born_in_us == True:
+          % if husband.birth_city != "" and husband.birth_state != "":
           ${husband.birth_city + ", " + husband.birth_state}
           % else:
-          % if husband.birth_unit == "":
-          ${husband.birth_address + ", " + husband.birth_city + ", " + husband.birth_country}
+          ${ husband.birth_city + husband.birth_state}
+          % endif
           % else:
+          % if husband.birth_unit == "":
+          % if husband.birth_address != "" and husband.birth_city != "" and husband.birth_country != "":
+          ${husband.birth_address + ", " + husband.birth_city + ", " + husband.birth_country}
+          % endif
+          % if husband.birth_address == "" and husband.birth_city != "" and husband.birth_country != "":
+          ${husband.birth_city + ", " + husband.birth_country}
+          % endif
+          % if husband.birth_address == "" and husband.birth_city == "" and husband.birth_country != "":
+          ${husband.birth_country}
+          % endif
+          % if husband.birth_address == "" and husband.birth_city == "" and husband.birth_country == "":
+          ${""}
+          % endif
+          % if husband.birth_address != "" and husband.birth_city != "" and husband.birth_country == "":
+          ${husband.birth_address + ", " + husband.birth_city}
+          % endif
+          % if husband.birth_address != "" and husband.birth_city == "" and husband.birth_country != "":
+          ${husband.birth_address + ", " + husband.birth_country}
+          % endif
+          % else:
+           % if husband.birth_address != "" and husband.birth_city != "" and husband.birth_country != "":
           ${husband.birth_address + ", " + husband.birth_unit + ", " + husband.birth_city + ", " + husband.birth_country}
+          % endif
+          % if husband.birth_address == "" and husband.birth_city != "" and husband.birth_country != "":
+          ${husband.birth_unit + ", " + husband.birth_city + ", " + husband.birth_country}
+          % endif
+          % if husband.birth_address == "" and husband.birth_city == "" and husband.birth_country != "":
+          ${husband.birth_unit + ", " + husband.birth_country}
+          % endif
+          % if husband.birth_address == "" and husband.birth_city == "" and husband.birth_country == "":
+          ${husband.birth_unit}
+          % endif
+          % if husband.birth_address != "" and husband.birth_city != "" and husband.birth_country == "":
+          ${husband.birth_address + ", " + husband.birth_unit + ", " + husband.birth_city}
+          % endif
+          % if husband.birth_address != "" and husband.birth_city == "" and husband.birth_country != "":
+          ${husband.birth_address + ", " + husband.birth_unit + ", " + husband.birth_country}
+          % endif
           % endif
           % endif
       - "husband_dob": ${husband.birth_date}
@@ -1299,7 +1347,11 @@ attachment:
           ${mother.birth_city + ", " + mother.birth_state}
           % else:
           % if mother.birth_unit == "":
+          % if mother.birth_address != "":
           ${mother.birth_address + ", " + mother.birth_city + ", " + mother.birth_country}
+          % else:
+          ${mother.birth_city + ", " + mother.birth_country}
+          % endif
           % else:
           ${mother.birth_address + ", " + mother.birth_unit + ", " + mother.birth_city + ", " + mother.birth_country}
           % endif

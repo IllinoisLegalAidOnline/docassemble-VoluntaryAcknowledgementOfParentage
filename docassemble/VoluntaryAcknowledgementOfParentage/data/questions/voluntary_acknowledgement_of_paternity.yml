@@ -963,7 +963,7 @@ fields:
   - Date: marriage_date
     datatype: ThreePartsDate
     required: False
-    alMin: ${mother.birth_date.plus(years=13)}
+    alMin: ${mother.birth_date}
     alMax: ${ today() }
 ---
 id: witness intro

@@ -548,8 +548,8 @@ question: |
 fields:
   - Birth date: father.birth_date
     datatype: ThreePartsDate
-    alMax: ${today()}
-    alMin: ${as_datetime('01/01/1907')}
+    alMax: ${today().format("yyyy-MM-dd")}
+    alMin: ${today().minus(years=120).format("yyyy-MM-dd")}
 ---
 id: mother birthdate
 question: |
@@ -561,8 +561,8 @@ question: |
 fields:
   - Birth date: mother.birth_date
     datatype: ThreePartsDate
-    alMax: ${today()}
-    alMin: ${as_datetime('01/01/1907')}
+    alMax: ${today().format("yyyy-MM-dd")}
+    alMin: ${today().minus(years=120).format("yyyy-MM-dd")}
 ---
 id: husband birthdate
 question: |
@@ -573,8 +573,8 @@ fields:
   - Birth date: husband.birth_date
     datatype: ThreePartsDate
     required: False
-    alMax: ${today()}
-    alMin: ${as_datetime('01/01/1907')}
+    alMax: ${today().format("yyyy-MM-dd")}
+    alMin: ${today().minus(years=120).format("yyyy-MM-dd")}
 ---
 id: father address
 question: |
@@ -887,14 +887,14 @@ subject: |
 content: | 
   Illinois currently allows birth certificates to list X as a gender marker, but the VAP form has not been updated to reflect this. If you select X on this question, the gender marker on the VAP form will be left blank.
 ---
-id: child birthdate
+id: child birth date
 question: |
   What is ${child.name.full(middle='full')}'s date of birth?
 fields:
   - Birth date: child.birth_date
     datatype: ThreePartsDate
-    alMax: ${today()}
-    alMin: ${mother.birth_date}
+    alMax: ${today().format("yyyy-MM-dd")}
+    alMin: ${mother.birth_date.format("yyyy-MM-dd")}
 ---
 id: hospital check
 question: |
@@ -963,8 +963,8 @@ fields:
   - Date: marriage_date
     datatype: ThreePartsDate
     required: False
-    alMin: ${mother.birth_date}
-    alMax: ${ today() }
+    alMin: ${mother.birth_date.format("yyyy-MM-dd")}
+    alMax: ${ today().format("yyyy-MM-dd") }
 ---
 id: witness intro
 continue button field: witness_intro

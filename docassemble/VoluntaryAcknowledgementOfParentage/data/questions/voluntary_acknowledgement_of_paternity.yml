@@ -44,6 +44,7 @@ mandatory: True
 code: |
   nav.set_section('section_intro')
   sees_nav_bar
+  snapshot_start
   set_progress(5)
   how_to_use
   accept_terms
@@ -132,7 +133,38 @@ code: |
     denial_witness_outro
   nav.set_section('section_download')
   set_progress(100)
+  forms_assembling
+  snapshot_forms
   get_docs_screen
+---
+code: |
+  stuff_to_snapshot = {
+  	'start_time': str(current_datetime().format_datetime()),
+  	'started_interview': True, 
+  	}
+    
+  stuff_to_snapshot['mother_zip'] = showifdef('mother.address.zip')
+  
+  stuff_to_snapshot['father_zip'] = showifdef('father.address.zip')
+
+  stuff_to_snapshot['downloaded_forms'] = showifdef('forms_assembling')
+  
+  stuff_to_snapshot['user_gender'] = showifdef('user_gender') 
+  
+  stuff_to_snapshot['user_witness_known'] = showifdef('user_witness_known') 
+  
+  store_variables_snapshot(
+  	data=stuff_to_snapshot, persistent=True
+  	)
+  snapshot_interview_state = True
+---
+code: |
+  snapshot_interview_state
+  snapshot_start = True  
+---
+code: |
+  reconsider('snapshot_interview_state')
+  snapshot_forms = True
 ---
 id: welcome
 question: |
@@ -1137,6 +1169,17 @@ subquestion: |
   ${mother.name.full(middle='full')} and ${husband.name.full(middle='full')} will both need someone to witness their signatures of the Denial of Paternity. That witness will have to add their name and contact information, then sign and date the form.
   % endif
 ---
+id: forms assembling
+continue button field: forms_assembling
+question: |
+  Almost done
+subquestion: |
+  After you click **Next**, it may take a few moments to finish making your forms.
+  
+  ###### You do not need to refresh your screen. Hang in there!
+  
+  [NEWLINE]
+---
 id: get docs screen
 event: get_docs_screen
 question: |
@@ -1713,7 +1756,7 @@ review:
 ---
 need:
   - end_in_county
-id: review vap
+id: vap review screen
 event: section_vap
 question: |
   Parents
@@ -1764,7 +1807,7 @@ review:
       ${word(yesno(other_marriage))}
     show if: were_married == False
 ---
-id: review father
+id: father review screen
 event: section_father
 question: |
   % if user_gender == "mother":
@@ -1846,7 +1889,7 @@ review:
       % endif
     show if: father.born_in_us == False
 ---
-id: review mother
+id: mother review screen
 event: section_mother
 question: |
   % if user_gender == "mother":
@@ -1957,7 +2000,7 @@ review:
 ---
 need:
   - end_in_county
-id: review child
+id: child review screen
 event: section_child
 question: |
   Child's information
@@ -1999,7 +2042,7 @@ review:
       ${child.address.on_one_line(bare=True)}, ${end_in_county(child.address.county)}
     show if: child_born == True and in_hospital == False
 ---
-id: review denial
+id: denial review screen
 event: section_denial
 question: |
   Previous marriage (optional)
@@ -2073,7 +2116,7 @@ review:
       ${marriage_date}
     show if: other_marriage
 ---
-id: review witnesses
+id: witnesses review screen
 event: section_witnesses
 question: |
   Witnesses

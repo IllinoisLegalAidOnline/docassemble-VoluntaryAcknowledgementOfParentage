@@ -142,7 +142,12 @@ code: |
   	'start_time': str(current_datetime().format_datetime()),
   	'started_interview': True, 
   	}
-    
+  
+  try:
+    stuff_to_snapshot['ip_address'] = device(ip=True)
+  except:
+    pass
+  
   stuff_to_snapshot['mother_zip'] = showifdef('mother.address.zip')
   
   stuff_to_snapshot['father_zip'] = showifdef('father.address.zip')

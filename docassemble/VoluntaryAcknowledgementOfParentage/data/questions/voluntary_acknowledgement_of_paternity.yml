@@ -305,13 +305,13 @@ fields:
 id: certain biological father
 question: |
   % if user_gender == "mother":
-  Are you certain ${father.name.full(middle='full')} is the biological father of the child?
+  Are you certain ${father.name_full()} is the biological father of the child?
   % else:
   Are you certain you are the biological father of the child?
   % endif
 subquestion: |
   % if user_gender == "mother":
-  If there is someone other than ${father.name.full(middle='full')} who could be the biological father, you should select **No**.
+  If there is someone other than ${father.name_full()} who could be the biological father, you should select **No**.
   % else:
   If there is someone other than you who could be the biological father, you should select **No**.
   % endif
@@ -444,9 +444,9 @@ depends on:
   - mother.name.suffix
 code: |
   if user_gender == "mother":
-    other_name = father.name.full(middle='full')
+    other_name = father.name_full()
   else:
-    other_name = mother.name.full(middle='full')
+    other_name = mother.name_full()
 ---
 id: marriage check
 question: |
@@ -603,7 +603,7 @@ fields:
 ---
 id: husband birthdate
 question: |
-  What is ${husband.name.full(middle='full')}'s date of birth?
+  What is ${husband.name_full()}'s date of birth?
 subquestion: |
   If you do not know, leave this question blank.
 fields:
@@ -651,7 +651,7 @@ fields:
 ---
 id: husband address
 question: |
-  What is ${husband.name.full(middle='full')}'s address?
+  What is ${husband.name_full()}'s address?
 subquestion: |
   If you do not know, leave this question blank.
 fields:
@@ -705,9 +705,9 @@ fields:
 ---
 id: husband ssn
 question: |
-  What is ${husband.name.full(middle='full')}'s social security number?
+  What is ${husband.name_full()}'s social security number?
 subquestion: |
-  This information is optional, but it helps identify ${husband.name.full(middle='full')}.
+  This information is optional, but it helps identify ${husband.name_full()}.
 fields:
  - Social security number: husband.ssn
    required: False
@@ -750,9 +750,9 @@ fields:
 ---
 id: husband phone
 question: |
-  What is ${husband.name.full(middle='full')}'s phone number?
+  What is ${husband.name_full()}'s phone number?
 subquestion: |
-  This information is not required, but it can help the Illinois Department of Healthcare and Family Services contact ${husband.name.full(middle='full')}.
+  This information is not required, but it can help the Illinois Department of Healthcare and Family Services contact ${husband.name_full()}.
 fields:
   - Phone number: husband.phone_number
     datatype: al_international_phone
@@ -782,7 +782,7 @@ fields:
 ---
 id: husband birth check
 question: |
-  Was ${ husband.name.full(middle='full')} born in the United States?
+  Was ${ husband.name_full()} born in the United States?
 fields:
   - no label: husband.born_in_us
     datatype: yesnomaybe
@@ -815,7 +815,7 @@ fields:
 ---
 id: husband us birthplace
 question: |
-  Where was ${ husband.name.full(middle='full') } born?
+  Where was ${ husband.name_full() } born?
 subquestion: |
   If you do not know, leave this question blank.
 fields:
@@ -860,7 +860,7 @@ fields:
 ---
 id: husband abroad birthplace
 question: |
-  Where was ${ husband.name.full(middle='full') } born?
+  Where was ${ husband.name_full() } born?
 subquestion: |
   If you do not know, leave this question blank.
 fields:
@@ -909,7 +909,7 @@ fields:
 ---
 id: child gender
 question: |
-  What is the gender marker on ${ child.name.full(middle='full')}'s birth certificate?
+  What is the gender marker on ${ child.name_full()}'s birth certificate?
 field: child.gender
 choices:
   - Male
@@ -926,7 +926,7 @@ content: |
 ---
 id: child birth date
 question: |
-  What is ${child.name.full(middle='full')}'s date of birth?
+  What is ${child.name_full()}'s date of birth?
 fields:
   - Birth date: child.birth_date
     datatype: ThreePartsDate
@@ -935,7 +935,7 @@ fields:
 ---
 id: hospital check
 question: |
-  Was ${child.name.full(middle='full')} born in a hospital?
+  Was ${child.name_full()} born in a hospital?
 fields:
   - no label: in_hospital
     datatype: yesnoradio
@@ -943,7 +943,7 @@ fields:
 #I have not implemented the county list from other programs because this county is not necessarily in Illinois. I have also used the child.address data to store the child's birthplace location. child.address refers to the child's birthplace.
 id: child hospital address
 question: |
-  Where was ${child.name.full(middle='full')} born?
+  Where was ${child.name_full()} born?
 fields:
   - Hospital name: hospital_name
   - City: child.address.city
@@ -954,7 +954,7 @@ fields:
 ---
 id: child other birthplace address
 question: |
-  Where was ${child.name.full(middle='full')} born?
+  Where was ${child.name_full()} born?
 fields:
   - Street address: child.address.address
     address autocomplete: True
@@ -988,9 +988,9 @@ subquestion: |
 id: marriage date
 question: |
   % if user_gender == "mother":
-  When did you and ${ husband.name.full(middle='full')} marry or enter into a civil union?
+  When did you and ${ husband.name_full()} marry or enter into a civil union?
   % else:
-  When did ${other_name} and ${ husband.name.full(middle='full')} marry or enter into a civil union?
+  When did ${other_name} and ${ husband.name_full()} marry or enter into a civil union?
   % endif
 subquestion: |
   % if user_gender != "mother":
@@ -1011,8 +1011,8 @@ subquestion: |
   You will need someone to witness you and ${ other_name } sign the Voluntary Acknowledgement of Paternity form.
   
   % if other_marriage == True:
-  % if husband.name.full(middle='full') != "":
-  The witness must be an adult age 18 or older but cannot be you, ${other_name}, or ${husband.name.full(middle='full')}.
+  % if husband.name_full() != "":
+  The witness must be an adult age 18 or older but cannot be you, ${other_name}, or ${husband.name_full()}.
   % else:
   The witness must be an adult age 18 or older but cannot be you, ${other_name}, or the spouse or ex-spouse signing the Denial of Paternity.
   % endif
@@ -1028,8 +1028,8 @@ subject: |
   **Who can be a witness?**
 content: |
   % if other_marriage == True:
-  % if husband.name.full(middle='full') != "":
-  The witness must be an adult age 18 or older but cannot be you, ${other_name}, or ${husband.name.full(middle='full')}.
+  % if husband.name_full() != "":
+  The witness must be an adult age 18 or older but cannot be you, ${other_name}, or ${husband.name_full()}.
   % else:
   The witness must be an adult age 18 or older but cannot be you, ${other_name}, or the spouse or ex-spouse signing the Denial of Paternity.
   % endif
@@ -1077,7 +1077,7 @@ fields:
 ---
 id: user witness address
 question: |
-  What is ${user_witness.name.full(middle='full')}'s address?
+  What is ${user_witness.name_full()}'s address?
 subquestion: |
   If you do not know, leave this question blank.
 fields:
@@ -1097,7 +1097,7 @@ fields:
 ---
 id: user denial witness address
 question: |
-  What is ${user_denial_witness.name.full(middle='full')}'s address?
+  What is ${user_denial_witness.name_full()}'s address?
 subquestion: |
   If you do not know, leave this question blank.
 fields:
@@ -1117,7 +1117,7 @@ fields:
 ---
 id: user witness phone
 question: |
-  What is ${user_witness.name.full(middle='full')}'s phone number?
+  What is ${user_witness.name_full()}'s phone number?
 subquestion: |
   If you do not know, leave this question blank.
 fields:
@@ -1127,7 +1127,7 @@ fields:
 ---
 id: user denial witness phone
 question: |
-  What is ${user_denial_witness.name.full(middle='full')}'s phone number?
+  What is ${user_denial_witness.name_full()}'s phone number?
 subquestion: |
   If you do not know, leave this question blank.
 fields:
@@ -1141,17 +1141,17 @@ question: |
   Denial of Paternity form witness
 subquestion: |
   % if user_gender == "mother":
-  You will also need someone to witness you and ${husband.name.full(middle='full')} sign the Denial of Paternity form.
+  You will also need someone to witness you and ${husband.name_full()} sign the Denial of Paternity form.
   
-  You do not have to sign the document at the same time as ${husband.name.full(middle='full')}.
+  You do not have to sign the document at the same time as ${husband.name_full()}.
   % else:
-  You will also need someone to witness ${other_name} and ${husband.name.full(middle='full')} sign the Denial of Paternity form.
+  You will also need someone to witness ${other_name} and ${husband.name_full()} sign the Denial of Paternity form.
   
-  ${other_name} does not have to sign the document at the same time as ${husband.name.full(middle='full')}.
+  ${other_name} does not have to sign the document at the same time as ${husband.name_full()}.
   % endif
   
-  % if husband.name.full(middle='full') != "":
-  The witness must be an adult age 18 or older but cannot be you, ${other_name}, or ${husband.name.full(middle='full')}.
+  % if husband.name_full() != "":
+  The witness must be an adult age 18 or older but cannot be you, ${other_name}, or ${husband.name_full()}.
   % else:
   The witness must be an adult age 18 or older but cannot be you, ${other_name}, or the spouse or ex-spouse signing the Denial of Paternity.
   % endif
@@ -1169,9 +1169,9 @@ question: |
   Reminder about Denial of Paternity signatures
 subquestion: |
   % if user_gender == "mother":
-  ${husband.name.full(middle='full')} will also need someone to witness their signature of the Denial of Paternity. That witness will have to add their name and contact information, then sign and date the form.
+  ${husband.name_full()} will also need someone to witness their signature of the Denial of Paternity. That witness will have to add their name and contact information, then sign and date the form.
   % else:
-  ${mother.name.full(middle='full')} and ${husband.name.full(middle='full')} will both need someone to witness their signatures of the Denial of Paternity. That witness will have to add their name and contact information, then sign and date the form.
+  ${mother.name_full()} and ${husband.name_full()} will both need someone to witness their signatures of the Denial of Paternity. That witness will have to add their name and contact information, then sign and date the form.
   % endif
 ---
 id: forms assembling
@@ -1304,11 +1304,11 @@ attachment:
       - "mother_phone": ${phone_number_formatted(mother.phone_number)}
       - "was_married": ${other_marriage}
       - "was_not_married": ${False if other_marriage == True else True}
-      - "husband_name": ${husband.name.full(middle='full')}
-      - "father_witness_name": ${user_witness.name.full(middle='full') if user_gender == "father" else ""}
+      - "husband_name": ${husband.name_full()}
+      - "father_witness_name": ${user_witness.name_full() if user_gender == "father" else ""}
       - "father_witness_address": ${user_witness.address.on_one_line(bare=True ) if user_gender == "father" else ""}
       - "father_witness_phone": ${phone_number_formatted(user_witness.phone_number) if user_gender == "father" else ""}
-      - "mother_witness_name": ${user_witness.name.full(middle='full') if user_gender == "mother" else ""}
+      - "mother_witness_name": ${user_witness.name_full() if user_gender == "mother" else ""}
       - "mother_witness_address": ${user_witness.address.on_one_line(bare=True ) if user_gender == "mother" else ""}
       - "mother_witness_phone": ${phone_number_formatted(user_witness.phone_number) if user_gender == "mother" else ""}
       - "x_check": ${ True if child.gender == "X" else False}
@@ -1419,11 +1419,11 @@ attachment:
       - "marriage_date": ${marriage_date}
       - "was_married": ${other_marriage}
       - "was_not_married": ${False if other_marriage == True else True}
-      - "husband_name": ${husband.name.full(middle='full')}
-      - "husband_witness_name": ${witnesses[3].name.full(middle='full')}
+      - "husband_name": ${husband.name_full()}
+      - "husband_witness_name": ${witnesses[3].name_full()}
       - "husband_witness_address": ${witnesses[3].address.on_one_line(bare=True )}
       - "husband_witness_phone": ${phone_number_formatted(witnesses[3].phone_number)}
-      - "mother_witness_name": ${user_denial_witness.name.full(middle='full') if user_gender == "mother" else ""}
+      - "mother_witness_name": ${user_denial_witness.name_full() if user_gender == "mother" else ""}
       - "mother_witness_address": ${user_denial_witness.address.on_one_line(bare=True ) if user_gender == "mother" else ""}
       - "mother_witness_phone": ${phone_number_formatted(user_denial_witness.phone_number) if user_gender == "mother" else ""}
       - "x_check": ${ True if child.gender == "X" else False}
@@ -1463,11 +1463,11 @@ review:
       % else:
       **Your name:**
       % endif
-      ${mother.name.full(middle='full')}
+      ${mother.name_full()}
   - Edit: mother.birth_date
     button: |
       % if user_gender == "father":
-      **${mother.name.full(middle='full')}'s date of birth:**
+      **${mother.name_full()}'s date of birth:**
       % else:
       **Your date of birth:**
       % endif
@@ -1475,7 +1475,7 @@ review:
   - Edit: mother.address.address
     button: |
       % if user_gender == "father":
-      **${mother.name.full(middle='full')}'s address:**
+      **${mother.name_full()}'s address:**
       % else:
       **Your address:**
       % endif
@@ -1483,7 +1483,7 @@ review:
   - Edit: mother.ssn
     button: |
       % if user_gender == "father":
-      **${mother.name.full(middle='full')}'s Social Security number:**
+      **${mother.name_full()}'s Social Security number:**
       % else:
       **Your Social Security number:**
       % endif
@@ -1491,7 +1491,7 @@ review:
   - Edit: mother.phone_number
     button: |
       % if user_gender == "father":
-      **${mother.name.full(middle='full')}'s phone number:**
+      **${mother.name_full()}'s phone number:**
       % else:
       **Your phone number:**
       % endif
@@ -1510,14 +1510,14 @@ review:
       % if user_gender == "mother":
       **What is your former last name?**
       % else:
-      **What is ${mother.name.full(middle='full')}'s former last name?**
+      **What is ${mother.name_full()}'s former last name?**
       % endif
       ${mother.maiden_name}
     show if: mother.changed_name
   - Edit: mother.born_in_us
     button: |
       % if user_gender == "father":
-      **Was ${mother.name.full(middle='full')} born in the United States?**
+      **Was ${mother.name_full()} born in the United States?**
       % else:
       **Were you born in the United States?**
       % endif
@@ -1525,7 +1525,7 @@ review:
   - Edit: mother.birth_state
     button: |
       % if user_gender == "father":
-      **Where was ${ mother.name.full(middle='full') } born?**
+      **Where was ${ mother.name_full() } born?**
       % else:
       **Where were you born?**
       % endif
@@ -1534,7 +1534,7 @@ review:
   - Edit: mother.birth_country
     button: |
       % if user_gender == "father":
-      **Where was ${ mother.name.full(middle='full') } born?**
+      **Where was ${ mother.name_full() } born?**
       % else:
       **Where were you born?**
       % endif
@@ -1551,11 +1551,11 @@ review:
       % else:
       **Your name:**
       % endif
-      ${father.name.full(middle='full')}
+      ${father.name_full()}
   - Edit: father.birth_date
     button: |
       % if user_gender == "mother":
-      **${father.name.full(middle='full')}'s date of birth:**
+      **${father.name_full()}'s date of birth:**
       % else:
       **Your date of birth:**
       % endif
@@ -1563,7 +1563,7 @@ review:
   - Edit: father.address.address
     button: |
       % if user_gender == "mother":
-      **${father.name.full(middle='full')}'s address:**
+      **${father.name_full()}'s address:**
       % else:
       **Your address:**
       % endif
@@ -1571,7 +1571,7 @@ review:
   - Edit: father.ssn
     button: |
       % if user_gender == "mother":
-      **${father.name.full(middle='full')}'s Social Security number:**
+      **${father.name_full()}'s Social Security number:**
       % else:
       **Your Social Security number:**
       % endif
@@ -1579,7 +1579,7 @@ review:
   - Edit: father.phone_number
     button: |
       % if user_gender == "mother":
-      **${father.name.full(middle='full')}'s phone number:**
+      **${father.name_full()}'s phone number:**
       % else:
       **Your phone number:**
       % endif
@@ -1587,7 +1587,7 @@ review:
   - Edit: father.born_in_us
     button: |
       % if user_gender == "mother":
-      **Was ${father.name.full(middle='full')} born in the United States?**
+      **Was ${father.name_full()} born in the United States?**
       % else:
       **Were you born in the United States?**
       % endif
@@ -1595,7 +1595,7 @@ review:
   - Edit: father.birth_state
     button: |
       % if user_gender == "mother":
-      **Where was ${ father.name.full(middle='full') } born?**
+      **Where was ${ father.name_full() } born?**
       % else:
       **Where were you born?**
       % endif
@@ -1604,7 +1604,7 @@ review:
   - Edit: father.birth_country
     button: |
       % if user_gender == "mother":
-      **Where was ${ father.name.full(middle='full') } born?**
+      **Where was ${ father.name_full() } born?**
       % else:
       **Where were you born?**
       % endif
@@ -1620,7 +1620,7 @@ review:
       ${word(yesno(child_born))}
   - Edit: child.birth_date
     button: |
-      **${child.name.full(middle='full')}'s birth date:**
+      **${child.name_full()}'s birth date:**
       ${child.birth_date}
     show if: child_born
   - Edit: were_married
@@ -1640,26 +1640,26 @@ review:
   - Edit: child.name.first
     button: |
       **The child's name:**
-      ${child.name.full(middle='full')}
+      ${child.name_full()}
     show if: child_born
   - Edit: child.gender
     button: |
-      **${ child.name.full(middle='full')}'s gender on birth certificate:**
+      **${ child.name_full()}'s gender on birth certificate:**
       ${child.gender}
     show if: child_born
   - Edit: in_hospital
     button: |
-      **Was ${child.name.full(middle='full')} born in a hospital?**
+      **Was ${child.name_full()} born in a hospital?**
       ${word(yesno(in_hospital))}
     show if: child_born
   - Edit: hospital_name
     button: |
-      **${child.name.full(middle='full')}'s birth place:**
+      **${child.name_full()}'s birth place:**
       ${hospital_name}, ${child.address.city}, ${end_in_county(child.address.county)}, ${child.address.state}
     show if: child_born == True and in_hospital == True
   - Edit: child.address.address
     button: |
-      **${child.name.full(middle='full')}'s birth place:**
+      **${child.name_full()}'s birth place:**
       ${child.address.on_one_line(bare=True)}, ${end_in_county(child.address.county)}
     show if: child_born == True and in_hospital == False
   - Edit: husband.name.first
@@ -1667,43 +1667,43 @@ review:
       % if user_gender == "mother":
       **Your husband or ex-husband's name:**
       % else:
-      **${mother.name.full(middle='full')}'s spouse or ex-spouse's name:**
+      **${mother.name_full()}'s spouse or ex-spouse's name:**
       % endif
-      ${husband.name.full(middle='full')}
+      ${husband.name_full()}
     show if: other_marriage
   - Edit: husband.birth_date
     button: |
-      **${husband.name.full(middle='full')}'s date of birth:**
+      **${husband.name_full()}'s date of birth:**
       ${husband.birth_date}
     show if: other_marriage
   - Edit: husband.address.address
     button: |
-      **${husband.name.full(middle='full')}'s address:**
+      **${husband.name_full()}'s address:**
       ${husband.address.on_one_line(bare=True)}
     show if: other_marriage
   - Edit: husband.ssn
     button: |
-      **${husband.name.full(middle='full')}'s Social Security number:**
+      **${husband.name_full()}'s Social Security number:**
       ${husband.ssn}
     show if: other_marriage
   - Edit: husband.phone_number
     button: |
-      **${husband.name.full(middle='full')}'s phone number:**
+      **${husband.name_full()}'s phone number:**
       ${phone_number_formatted(husband.phone_number)}
     show if: other_marriage
   - Edit: husband.born_in_us
     button: |
-      **Was ${husband.name.full(middle='full')} born in the United States?**
+      **Was ${husband.name_full()} born in the United States?**
       ${word(yesno(husband.born_in_us))}
     show if: other_marriage
   - Edit: husband.birth_state
     button: |
-      **${ husband.name.full(middle='full') }'s birthplace:**
+      **${ husband.name_full() }'s birthplace:**
       ${husband.birth_city}, ${husband.birth_state}
     show if: other_marriage == True and husband.born_in_us == True
   - Edit: husband.birth_country
     button: |
-      **${ husband.name.full(middle='full') }'s birthplace:**
+      **${ husband.name_full() }'s birthplace:**
       % if husband.birth_unit == "":
       ${husband.birth_address}, ${husband.birth_city}, ${husband.birth_country}
       % else:
@@ -1713,9 +1713,9 @@ review:
   - Edit: marriage_date
     button: |
       % if user_gender == "mother":
-      **Date you and ${husband.name.full(middle='full')} married or entered into a civil union:**
+      **Date you and ${husband.name_full()} married or entered into a civil union:**
       % else:
-      **Date ${mother.name.full(middle='full')} and ${husband.name.full(middle='full')} married or entered into a civil union:**
+      **Date ${mother.name_full()} and ${husband.name_full()} married or entered into a civil union:**
       % endif
       ${marriage_date}
     show if: other_marriage
@@ -1726,16 +1726,16 @@ review:
   - Edit: user_witness.name.first
     button: |
       **Vap witness's name:**
-      ${user_witness.name.full(middle='full')}
+      ${user_witness.name_full()}
     show if: user_witness_known
   - Edit: user_witness.address.address
     button: |
-      **${user_witness.name.full(middle='full')}'s address:**
+      **${user_witness.name_full()}'s address:**
       ${user_witness.address.on_one_line(bare=True)}
     show if: user_witness_known
   - Edit: user_witness.phone_number
     button: |
-      **${user_witness.name.full(middle='full')}'s phone number:**
+      **${user_witness.name_full()}'s phone number:**
       ${phone_number_formatted(user_witness.phone_number)}
     show if: user_witness_known
   - Edit: user_denial_witness_known
@@ -1746,16 +1746,16 @@ review:
   - Edit: user_denial_witness.name.first
     button: |
       **Denial of Paternity witness's name:**
-      ${user_denial_witness.name.full(middle='full')}
+      ${user_denial_witness.name_full()}
     show if: user_denial_witness_known == True and user_gender == "mother"
   - Edit: user_denial_witness.address.address
     button: |
-      **${user_denial_witness.name.full(middle='full')}'s address:**
+      **${user_denial_witness.name_full()}'s address:**
       ${user_denial_witness.address.on_one_line(bare=True)}
     show if: user_denial_witness_known == True and user_gender == "mother"
   - Edit: user_denial_witness.phone_number
     button: |
-      **${user_denial_witness.name.full(middle='full')}'s phone number:**
+      **${user_denial_witness.name_full()}'s phone number:**
       ${phone_number_formatted(user_denial_witness.phone_number)}
     show if: user_denial_witness_known == True and user_gender == "mother"
 ---
@@ -1779,7 +1779,7 @@ review:
       % else:
       **Your name:**
       % endif
-      ${mother.name.full(middle='full')}
+      ${mother.name_full()}
   - Edit: father.name.first
     button: |
       % if user_gender == "mother":
@@ -1787,14 +1787,14 @@ review:
       % else:
       **Your name:**
       % endif
-      ${father.name.full(middle='full')}
+      ${father.name_full()}
   - Edit: child_born
     button: |
       **Has the child been born yet?**
       ${word(yesno(child_born))}
   - Edit: child.birth_date
     button: |
-      **${child.name.full(middle='full')}'s birth date:**
+      **${child.name_full()}'s birth date:**
       ${child.birth_date}
     show if: child_born
   - Edit: were_married
@@ -1830,11 +1830,11 @@ review:
       % else:
       **Your name:**
       % endif
-      ${father.name.full(middle='full')}
+      ${father.name_full()}
   - Edit: father.birth_date
     button: |
       % if user_gender == "mother":
-      **${father.name.full(middle='full')}'s date of birth:**
+      **${father.name_full()}'s date of birth:**
       % else:
       **Your date of birth:**
       % endif
@@ -1842,7 +1842,7 @@ review:
   - Edit: father.address.address
     button: |
       % if user_gender == "mother":
-      **${father.name.full(middle='full')}'s address:**
+      **${father.name_full()}'s address:**
       % else:
       **Your address:**
       % endif
@@ -1850,7 +1850,7 @@ review:
   - Edit: father.ssn
     button: |
       % if user_gender == "mother":
-      **${father.name.full(middle='full')}'s Social Security number:**
+      **${father.name_full()}'s Social Security number:**
       % else:
       **Your Social Security number:**
       % endif
@@ -1858,7 +1858,7 @@ review:
   - Edit: father.phone_number
     button: |
       % if user_gender == "mother":
-      **${father.name.full(middle='full')}'s phone number:**
+      **${father.name_full()}'s phone number:**
       % else:
       **Your phone number:**
       % endif
@@ -1866,7 +1866,7 @@ review:
   - Edit: father.born_in_us
     button: |
       % if user_gender == "mother":
-      **Was ${father.name.full(middle='full')} born in the United States?**
+      **Was ${father.name_full()} born in the United States?**
       % else:
       **Were you born in the United States?**
       % endif
@@ -1874,7 +1874,7 @@ review:
   - Edit: father.birth_state
     button: |
       % if user_gender == "mother":
-      **Where was ${ father.name.full(middle='full') } born?**
+      **Where was ${ father.name_full() } born?**
       % else:
       **Where were you born?**
       % endif
@@ -1883,7 +1883,7 @@ review:
   - Edit: father.birth_country
     button: |
       % if user_gender == "mother":
-      **Where was ${ father.name.full(middle='full') } born?**
+      **Where was ${ father.name_full() } born?**
       % else:
       **Where were you born?**
       % endif
@@ -1912,11 +1912,11 @@ review:
       % else:
       **Your name:**
       % endif
-      ${mother.name.full(middle='full')}
+      ${mother.name_full()}
   - Edit: mother.birth_date
     button: |
       % if user_gender == "father":
-      **${mother.name.full(middle='full')}'s date of birth:**
+      **${mother.name_full()}'s date of birth:**
       % else:
       **Your date of birth:**
       % endif
@@ -1924,7 +1924,7 @@ review:
   - Edit: mother.address.address
     button: |
       % if user_gender == "father":
-      **${mother.name.full(middle='full')}'s address:**
+      **${mother.name_full()}'s address:**
       % else:
       **Your address:**
       % endif
@@ -1932,7 +1932,7 @@ review:
   - Edit: mother.ssn
     button: |
       % if user_gender == "father":
-      **${mother.name.full(middle='full')}'s Social Security number:**
+      **${mother.name_full()}'s Social Security number:**
       % else:
       **Your Social Security number:**
       % endif
@@ -1940,7 +1940,7 @@ review:
   - Edit: mother.phone_number
     button: |
       % if user_gender == "father":
-      **${mother.name.full(middle='full')}'s phone number:**
+      **${mother.name_full()}'s phone number:**
       % else:
       **Your phone number:**
       % endif
@@ -1959,14 +1959,14 @@ review:
       % if user_gender == "mother":
       **What is your former last name?**
       % else:
-      **What is ${mother.name.full(middle='full')}'s former last name?**
+      **What is ${mother.name_full()}'s former last name?**
       % endif
       ${mother.maiden_name}
     show if: mother.changed_name
   - Edit: mother.born_in_us
     button: |
       % if user_gender == "father":
-      **Was ${mother.name.full(middle='full')} born in the United States?**
+      **Was ${mother.name_full()} born in the United States?**
       % else:
       **Were you born in the United States?**
       % endif
@@ -1974,7 +1974,7 @@ review:
   - Edit: mother.birth_state
     button: |
       % if user_gender == "father":
-      **Where was ${ mother.name.full(middle='full') } born?**
+      **Where was ${ mother.name_full() } born?**
       % else:
       **Where were you born?**
       % endif
@@ -1983,7 +1983,7 @@ review:
   - Edit: mother.birth_country
     button: |
       % if user_gender == "father":
-      **Where was ${ mother.name.full(middle='full') } born?**
+      **Where was ${ mother.name_full() } born?**
       % else:
       **Where were you born?**
       % endif
@@ -2019,31 +2019,31 @@ review:
   - Edit: child.name.first
     button: |
       **The child's name:**
-      ${child.name.full(middle='full')}
+      ${child.name_full()}
     show if: child_born
   - Edit: child.gender
     button: |
-      **${ child.name.full(middle='full')}'s gender on birth certificate:**
+      **${ child.name_full()}'s gender on birth certificate:**
       ${child.gender}
     show if: child_born
   - Edit: child.birth_date
     button: |
-      **${child.name.full(middle='full')}'s birth date:**
+      **${child.name_full()}'s birth date:**
       ${child.birth_date}
     show if: child_born
   - Edit: in_hospital
     button: |
-      **Was ${child.name.full(middle='full')} born in a hospital?**
+      **Was ${child.name_full()} born in a hospital?**
       ${word(yesno(in_hospital))}
     show if: child_born
   - Edit: hospital_name
     button: |
-      **${child.name.full(middle='full')}'s birth place:**
+      **${child.name_full()}'s birth place:**
       ${hospital_name}, ${child.address.city}, ${end_in_county(child.address.county)}, ${child.address.state}
     show if: child_born == True and in_hospital == True
   - Edit: child.address.address
     button: |
-      **${child.name.full(middle='full')}'s birth place:**
+      **${child.name_full()}'s birth place:**
       ${child.address.on_one_line(bare=True)}, ${end_in_county(child.address.county)}
     show if: child_born == True and in_hospital == False
 ---
@@ -2068,43 +2068,43 @@ review:
       % if user_gender == "mother":
       **Your spouse or ex-spouse's name:**
       % else:
-      **${mother.name.full(middle='full')}'s spouse or ex-spouse's name:**
+      **${mother.name_full()}'s spouse or ex-spouse's name:**
       % endif
-      ${husband.name.full(middle='full')}
+      ${husband.name_full()}
     show if: other_marriage
   - Edit: husband.birth_date
     button: |
-      **${husband.name.full(middle='full')}'s date of birth:**
+      **${husband.name_full()}'s date of birth:**
       ${husband.birth_date}
     show if: other_marriage
   - Edit: husband.address.address
     button: |
-      **${husband.name.full(middle='full')}'s address:**
+      **${husband.name_full()}'s address:**
       ${husband.address.on_one_line(bare=True)}
     show if: other_marriage
   - Edit: husband.ssn
     button: |
-      **${husband.name.full(middle='full')}'s Social Security number:**
+      **${husband.name_full()}'s Social Security number:**
       ${husband.ssn}
     show if: other_marriage
   - Edit: husband.phone_number
     button: |
-      **${husband.name.full(middle='full')}'s phone number:**
+      **${husband.name_full()}'s phone number:**
       ${phone_number_formatted(husband.phone_number)}
     show if: other_marriage
   - Edit: husband.born_in_us
     button: |
-      **Was ${husband.name.full(middle='full')} born in the United States?**
+      **Was ${husband.name_full()} born in the United States?**
       ${word(yesno(husband.born_in_us))}
     show if: other_marriage
   - Edit: husband.birth_state
     button: |
-      **${ husband.name.full(middle='full') }'s birthplace:**
+      **${ husband.name_full() }'s birthplace:**
       ${husband.birth_city}, ${husband.birth_state}
     show if: other_marriage == True and husband.born_in_us == True
   - Edit: husband.birth_country
     button: |
-      **${ husband.name.full(middle='full') }'s birthplace:**
+      **${ husband.name_full() }'s birthplace:**
       % if husband.birth_unit == "":
       ${husband.birth_address}, ${husband.birth_city}, ${husband.birth_country}
       % else:
@@ -2114,9 +2114,9 @@ review:
   - Edit: marriage_date
     button: |
       % if user_gender == "mother":
-      **Date you and ${husband.name.full(middle='full')} married or entered into a civil union:**
+      **Date you and ${husband.name_full()} married or entered into a civil union:**
       % else:
-      **Date ${mother.name.full(middle='full')} and ${husband.name.full(middle='full')} married or entered into a civil union:**
+      **Date ${mother.name_full()} and ${husband.name_full()} married or entered into a civil union:**
       % endif
       ${marriage_date}
     show if: other_marriage
@@ -2135,16 +2135,16 @@ review:
   - Edit: user_witness.name.first
     button: |
       **VAP witness's name:**
-      ${user_witness.name.full(middle='full')}
+      ${user_witness.name_full()}
     show if: user_witness_known
   - Edit: user_witness.address.address
     button: |
-      **${user_witness.name.full(middle='full')}'s address:**
+      **${user_witness.name_full()}'s address:**
       ${user_witness.address.on_one_line(bare=True)}
     show if: user_witness_known
   - Edit: user_witness.phone_number
     button: |
-      **${user_witness.name.full(middle='full')}'s phone number:**
+      **${user_witness.name_full()}'s phone number:**
       ${phone_number_formatted(user_witness.phone_number)}
     show if: user_witness_known
   - Edit: user_denial_witness_known
@@ -2155,15 +2155,15 @@ review:
   - Edit: user_denial_witness.name.first
     button: |
       **Denial of Paternity witness's name:**
-      ${user_denial_witness.name.full(middle='full')}
+      ${user_denial_witness.name_full()}
     show if: user_denial_witness_known == True and user_gender == "mother"
   - Edit: user_denial_witness.address.address
     button: |
-      **${user_denial_witness.name.full(middle='full')}'s address:**
+      **${user_denial_witness.name_full()}'s address:**
       ${user_denial_witness.address.on_one_line(bare=True)}
     show if: user_denial_witness_known == True and user_gender == "mother"
   - Edit: user_denial_witness.phone_number
     button: |
-      **${user_denial_witness.name.full(middle='full')}'s phone number:**
+      **${user_denial_witness.name_full()}'s phone number:**
       ${phone_number_formatted(user_denial_witness.phone_number)}
     show if: user_denial_witness_known == True and user_gender == "mother"

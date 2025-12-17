@@ -46,6 +46,7 @@ code: |
   sees_nav_bar
   snapshot_start
   set_progress(5)
+  law_change
   how_to_use
   accept_terms
   vap_requirements
@@ -238,6 +239,17 @@ content: |
   If you have questions or concerns about your legal problem and want legal advice you should talk to a lawyer.
  
   Use [**Get Legal Help**](https://www.illinoislegalaid.org/get-legal-help) to find free or low-cost legal services in your area.
+---
+id: Law change info
+continue button field: law_change
+question: |
+  January 1, 2026 law change
+subquestion: |
+  A new Illinois law changes how the Voluntary Acknowledgement of Paternity (VAP) works starting January 1, 2026. The [Equality for Every Family Act](https://www.ilga.gov/Legislation/BillStatus/FullText?GAID=18&DocNum=2568&DocTypeID=HB&LegId=160438&SessionID=114) expands the definition of parentage and the rights of parents. As a result, the VAP forms will change.
+  
+  At this time, this Easy Form uses the 2025 form. We are updating it as new information and new forms become available.
+
+  You may find updated information on the [Illinois Department of Healthcare and Family Services website](https://hfs.illinois.gov/childsupport/parents/paternity.html).
 ---
 id: vap requirements
 continue button field: vap_requirements

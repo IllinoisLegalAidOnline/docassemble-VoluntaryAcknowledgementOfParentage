@@ -8,7 +8,6 @@ metadata:
 ---
 include:
   - docassemble.AssemblyLine:assembly_line.yml
-  - docassemble.ALToolbox:phone-number-validation.yml
   - docassemble.ILAO:ilao-interview-framework.yml
   - docassemble.ILAO:shared-basic-questions.yml
 ---
@@ -49,11 +48,10 @@ code: |
   vap_requirements
   more_vap_requirements
   nav.set_section('section_vap')
-  user_gender
+  user_role
   birth_parent.name.first
   gen_parent.name.first
-  if is_certain == False:
-    uncertain_kickout
+  other_parent_relation
   if lets_qualify == False:
     qualify_kickout
   if child_born == False:
@@ -61,7 +59,6 @@ code: |
   else:
     if on_certificate == True:
       certificate_kickout
-    child.birth_date
   if were_married == False:
     other_marriage
   else:
@@ -103,7 +100,7 @@ code: |
   if other_marriage == True:
     denial_intro
     spouse.name.first
-    if user_gender == "birth_parent" or spouse_known:    
+    if user_role == "birth_parent" or spouse_known:    
       marriage_date
       spouse.birth_date
       spouse.address.address
@@ -120,7 +117,7 @@ code: |
     user_witness.name.first
     user_witness.address.address
     user_witness.phone_number
-    if other_marriage == True and user_gender == "birth_parent":
+    if other_marriage == True and user_role == "birth_parent":
       denial_witness_intro
       if user_denial_witness_known == True:
         user_denial_witness.name.first
@@ -153,7 +150,7 @@ code: |
 
   stuff_to_snapshot['downloaded_forms'] = showifdef('forms_assembling')
   
-  stuff_to_snapshot['user_gender'] = showifdef('user_gender') 
+  stuff_to_snapshot['user_role'] = showifdef('user_role') 
   
   stuff_to_snapshot['user_witness_known'] = showifdef('user_witness_known') 
   
@@ -186,9 +183,9 @@ question: |
 subquestion: |
   Welcome to Illinois Legal Aid Online's **Voluntary Acknowledgement of Parentage - VAP** Easy Form.
 
-  This program helps you create documents to tell the state who a child's parent is. The form it creates is a Voluntary Acknowledgement of Parentage, also called a VAP.
+  This program helps you create documents to tell the state who a child's parent is. The form it creates is a Voluntary Acknowledgement of Parentage, also called a VAP. This program can also make a Denial of Parentage form to tell the state the birth parent's spouse or ex-spouse is not the child's parent.
   
-   Once legal parentage is established, the parent will have all the rights and responsiblities of a legal parent. The parent will have the right to have a relationship with the child, but they will also be responsible for supporting the child financially.
+   Once legal parentage is established, the parent will have all the rights and responsiblities of a legal parent. The parent will have the right to have a relationship with the child, but they will also be responsible for supporting the child financially. The parent can be added to the child's birth certificate.
   
   The form you create can only be used in Illinois.
 field: sees_nav_bar
@@ -255,45 +252,65 @@ question: |
 subquestion: |
   To use a Voluntary Acknowledgement of Parentage, you must be either a:
   
-  * Birth parent helping the other parent of your child to acknowledge parentage, or
-  * Non-birth parent seeking to acknowledge that you are the parent of a child
-  
-  The VAP is used by the non-birth parent, but either parent can use this program to create the form. 
+  * **{Birth parent}** helping the other parent of your child to acknowledge parentage, or
+  * **{Genetic or intended parent}** seeking to acknowledge that you are the parent of a child
   
   To complete this program, you will need to know:
 
   * Both parents' address, birth date, and birth place, and
   * The child's name and birth date.
+
+  If the child was born by surrogacy, you might not be able to use a Voluntary Acknowledgment of Parentage. You may need to [**Get Legal Help**](https://www.illinoislegalaid.org/get-legal-help).
+terms:
+  - Birth parent: |
+      The birth parent is the parent who gave birth to the child.
+  - Genetic or intended parent: |
+      A genetic parent is the biological parent who did not give birth to the child. An intended parent is someone who was intended to be the parent of a child born through assisted reproduction.
 ---
 id: more vap requirements
 continue button field: more_vap_requirements
 question: |
   Additional requirements
 subquestion: |
-  If the child's birth parent was married to someone else when the child was conceived or born, you need to know:
-  
+  If the child's birth parent was married to someone else when the child was conceived or born, you may want them to sign a Denial of Parentage to say they are not the child's parent. For the Denial of Parentage, you will need to know:
+    
   * The birth parent's spouse or ex-spouse's address, birth date, and birth place, and
   * The date of their marriage. 
   
-  Note: this program can only be used if both biological parents agree and can sign the forms. If the birth parent's spouse or ex-spouse were married within 300 days of the child's birth, the spouse or ex-spouse must also agree. If the parents do not agree, you must ask a court to establish parentage. 
+  Note: this program can only be used if both the **{birth parent}** and the **{genetic or intended parent}** agree and can sign the forms. If the birth parent's spouse or ex-spouse were married within 300 days of the child's birth, the spouse or ex-spouse must also agree. If the parents do not agree, you must ask a court to establish parentage. 
   
   To learn more, read ILAO's article about [**starting a court case to establish parentage**](https://www.illinoislegalaid.org/legal-information/starting-case-parentage-court).
+terms:
+  - birth parent: |
+      The birth parent is the parent who gave birth to the child.
+  - genetic or intended parent: |
+      A genetic parent is the biological parent who did not give birth to the child. An intended parent is someone who was intended to be the parent of a child born through assisted reproduction.
 ---
-id: user gender
+id: user role
 question: |
   Did you give birth to the child?
 subquestion: |
   If you are currently pregnant with the child, click **Yes**.
+
+  ${collapse_template(surrogacy_collapse)}
 fields: 
-  - no label: user_gender
+  - no label: user_role
     input type: radio
     choices:
       - "Yes, I gave birth to the child. I am filling out these forms for the child's other parent to sign.": birth_parent
       - "I am the other parent of the child. I want to declare parentage of this child.": gen_parent
 ---
+template: surrogacy_collapse
+subject: |
+  **Children born by surrogacy**
+content: |
+  If the child was born by surrogacy, you may not be able to use a Voluntary Acknowledgment of Parentage.
+
+  You may need to [**Get Legal Help**](https://www.illinoislegalaid.org/get-legal-help).
+---
 id: genetic parent name
 question: |
-  % if user_gender == "gen_parent":
+  % if user_role == "gen_parent":
   What is your name?
   % else:
   What is the name of the child's other parent?
@@ -307,26 +324,39 @@ fields:
     required: False
     code: name_suffix()
 ---
-id: certain biological parent
+id: other parent relation
 question: |
-  % if user_gender == "birth_parent":
-  Are you certain ${gen_parent.name_full()} is the parent of the child?
+  % if user_role == "birth_parent":
+  How is ${gen_parent.name_full()} related to the child?
   % else:
-  Are you certain you are the parent of the child?
+  How are you are related to the child?
   % endif
 subquestion: |
-  % if user_gender == "birth_parent":
-  If the child was born through **{assisted reproduction}** and ${gen_parent.name_full()} was intended to be the parent, you should click **Yes**. 
-  
-  If there is someone other than ${gen_parent.name_full()} who could be the genetic parent, you should select **No**.
+  % if user_role == "birth_parent":
+  **Note**: If you are not sure ${gen_parent.name_full()} is the child's parent, you may want to get a paternity test. [**Read more about paternity tests**](https://www.illinoislegalaid.org/legal-information/paternity-test-basics).
   % else:
-  If the child was born through **{assisted reproduction}** and you were intended to be the parent, you should click **Yes**. 
-  
-  If there is someone other than you who could be the biological  parent, you should select **No**.
+  **Note**: If you are not sure you are the child's parent, you may want to get a paternity test. [**Read more about paternity tests**](https://www.illinoislegalaid.org/legal-information/paternity-test-basics).
   % endif
 fields:
-  - no label: is_certain
-    datatype: yesnoradio
+  - no label: other_parent_relation
+    input type: radio
+    choices:
+      - They are the genetic parent.: gen
+        show if: user_role == "birth_parent"
+      - The child was born by assisted reproduction and they were the intended parent.: intend
+        show if: user_role == "birth_parent"
+        help: |
+          **Assisted reproduction** is a way to cause pregnancy without sex or genetic material from the intended parent.
+       
+          Artificial insemination, sperm donation, egg donation, embryo donation, and in vitro fertilization are all assisted reproduction.
+      - I am the genetic parent.: gen
+        show if: user_role == "gen_parent"
+      - The child was born by assisted reproduction and I was the intended parent .: intend
+        show if: user_role == "gen_parent"
+        help: |
+          **Assisted reproduction** is a way to cause pregnancy without sex or genetic material from the intended parent.
+       
+          Artificial insemination, sperm donation, egg donation, embryo donation, and in vitro fertilization are all assisted reproduction.
 terms:
   - assisted reproduction: |
       **Assisted reproduction** is a way to cause pregnancy without sex. 
@@ -361,7 +391,7 @@ buttons:
 ---
 id: birth parent name
 question: |
-  % if user_gender == "birth_parent":
+  % if user_role == "birth_parent":
   What is your name?
   % else:
   Who is the birth parent of the child?
@@ -386,7 +416,7 @@ fields:
 ---
 id: spouse name
 question: |
-  % if user_gender == "birth_parent":
+  % if user_role == "birth_parent":
   What is the name of your spouse or ex-spouse?
   % else:
   What is the name of ${other_name}'s spouse or ex-spouse?
@@ -402,20 +432,20 @@ fields:
 ---
 id: qualifications intro
 question: |
-  % if user_gender == "birth_parent":
+  % if user_role == "birth_parent":
   Would you like to fill out the forms for ${other_name} to declare parentage of your child?
   % else:
-  Would you like to declare parentage of a child?
+  Would you like to declare parentage of your child?
   % endif
 subquestion: |
-  % if user_gender == "birth_parent":
-  Once legal parentage is established, ${other_name} will have all the rights of a legal parent, but also the responsibilities of a parent. ${other_name} will have the right to have a relationship with the child, but they will also be responsible for supporting the child financially.
+  % if user_role == "birth_parent":
+  Once legal parentage is established, ${other_name} will have all the rights of a legal parent, but also the responsibilities of a parent. ${other_name} will have the right to have a relationship with the child, but they will also be responsible for supporting the child financially. They will be able to add their name to the child's birth certificate.
   
-  A Voluntary Acknowledgement of Parentage is very hard to reverse. A DNA test stating ${other_name} is not the child's parent may not be enough to undo it. You should only use one if you are certain you want ${other_name} to have the rights and responsibilities of a parent.
+  A Voluntary Acknowledgement of Parentage is very hard to reverse. You should only use one if you are certain you want ${other_name} to have the rights and responsibilities of a parent.
   % else:
-  Once legal parentage is shown, you will have all the rights of a legal parent, but also the responsibilities of a parent. You will have the right to have a relationship with the child, but you will also be responsible for supporting the child financially.
+  Once legal parentage is shown, you will have all the rights of a legal parent, but also the responsibilities of a parent. You will have the right to have a relationship with the child, but you will also be responsible for supporting the child financially. You will be able to add your name to the child's birth certificate.
   
-  A Voluntary Acknowledgement of Parentage is very hard to reverse. A DNA test stating you are not the child's parent may not be enough to undo it. You should only use one if you are certain you want to have the rights and responsibilities of a parent.
+  A Voluntary Acknowledgement of Parentage is very hard to reverse. You should only use one if you are certain you want to have the rights and responsibilities of a parent.
   % endif
 fields:
   - no label: lets_qualify
@@ -443,14 +473,15 @@ continue button field: not_yet_born
 question: |
   Form not valid until child is born  
 subquestion: |
-  The Voluntary Acknowledgment of PArentage (VAP) may be completed before your child is born, but is not valid until the child is born and the VAP is filed with the Illinios Department of Healthcare and Family Services (HFS).
+  The Voluntary Acknowledgment of Parentage (VAP) may be completed before your child is born, but is not valid until the child is born and the VAP is filed with the Illinios Department of Healthcare and Family Services (HFS).
 
   You will need to add information about your child's birth and name to the VAP after they are born. Or, if you would prefer, you can:
+  
   * Have both parents add their information to the birth certificate, or
   * Ask for VAP forms at the hospital when the child is born.
 ---
 depends on:
-  - user_gender
+  - user_role
   - gen_parent.name.first
   - gen_parent.name.middle
   - gen_parent.name.last
@@ -460,16 +491,20 @@ depends on:
   - birth_parent.name.last
   - birth_parent.name.suffix
 code: |
-  if user_gender == "birth_parent":
+  if user_role == "birth_parent":
     other_name = gen_parent.name_full()
   else:
     other_name = birth_parent.name_full()
 ---
 id: marriage check
 question: |
-  Were you married to or in a civil union with ${ other_name} when the child was born or conceived?
+  % if child_born:
+  Were you married to or in a civil union with ${ other_name} when the child was born?
+  % else:
+  Will you be married to or in a civil untion with ${other_name} when the child is born?
+  % endif
 subquestion: |
-  % if user_gender == "birth_parent":
+  % if user_role == "birth_parent":
   % if child_born == True:
   If you were married to or in a civil union with ${other_name} when the child was born, they are presumed to be the child's parent. 
   
@@ -477,7 +512,7 @@ subquestion: |
   
   You should select **Yes** if:
   
-  * You and ${other_name} were married anytime between ${child.birth_date.minus(days=300)} and ${child.birth_date}, and
+  * You and ${other_name} were married anytime in the 300 days leading up to the child's birth and
   * You were not married to anyone else during that time.
   
   If ${other_name} is listed on the birth certificate as the child's parent, you do not need to complete this program.
@@ -496,7 +531,7 @@ subquestion: |
   
   You should select **Yes** if: 
   
-  * You and ${other_name} were married anytime between ${child.birth_date.minus(days=300)} and ${child.birth_date}, and
+  * You and ${other_name} were married anytime in the 300 days leading up to the child's birth, and
   * ${other_name} was not married to anyone else during that time.
   
   If your name is listed on the birth certificate as the child's parent, you do not need to complete this program.
@@ -515,13 +550,13 @@ fields:
 id: birth certificate
 question: |
   % if child_born == True:
-  % if user_gender == "birth_parent":
+  % if user_role == "birth_parent":
   Is ${ other_name} listed on the child's birth certificate?
   % else:
   Are you listed on the child's birth certificate?
   % endif
   % else:
-  % if user_gender == "birth_parent":
+  % if user_role == "birth_parent":
   Will ${other_name} be listed on the child's birth certificate?
   % else:
   Will you be listed on the child's birth certificate?
@@ -547,28 +582,32 @@ buttons:
 ---
 id: other marriage
 question: |
-  % if user_gender == "birth_parent":
-  Were you married to or in a civil union with someone else when the child was born or conceived?
-  % else:
-  Was ${other_name} married to or in a civil union with someone else when the child was born or conceived?
+  % if user_role == "birth_parent" and child_born:
+  Were you married to or in a civil union with someone else when the child was born?
+  % elif user_role != "birth_parent" and child_born:
+  Was ${other_name} married to or in a civil union with someone else when the child was born?
+  % elif user_role == "birth_parent" and  not child_born:
+  Will you be married to or in a civil union with someone else when the child is born?
+  % elif user_role != "birth_parent" and  not child_born:
+  Will ${other_name} be married to or in a civil union with someone else when the child is born?
   % endif
 subquestion: |
   % if child_born == True:
-  % if user_gender == "birth_parent":
+  % if user_role == "birth_parent":
   If you were married or in a civil union when the child was born, your spouse or ex-spouse must sign a Denial of Parentage form. You will get a completed copy of this form when you finish. It will need to be signed by you and your spouse or ex-spouse.
   
-  If the child was born within 300 days of your marriage or civil union with somebody ending, they are presumed to be the child's parent. You should select **Yes** if you were married or in a civil union with someone other than ${other_name} anytime between ${child.birth_date.minus(days=300)} and ${child.birth_date}.
+  If the child was born within 300 days of your marriage or civil union with somebody ending, they are presumed to be the child's parent. You should select **Yes** if you were married or in a civil union with someone other than ${other_name} anytime in the 300 days leading up to the child's birth.
   
   % else:
   If ${ other_name} was married or in a civil union when the child was born, the spouse or ex-spouse must fill out and sign a Denial of Parentage form. You will get a completed copy of this form when you finish. It will need to be signed by ${other_name}'s spouse or ex-spouse.
   
-  If the child was born within 300 days of ${other_name}'s marriage or civil union with someone, they are presumed to be the child's parent. You should select **Yes** if ${other_name} was married or in a civil union with someone other than you anytime between ${child.birth_date.minus(days=300)} and ${child.birth_date}.
+  If the child was born within 300 days of ${other_name}'s marriage or civil union with someone, they are presumed to be the child's parent. You should select **Yes** if ${other_name} was married or in a civil union with someone other than you anytime in the 300 days leading up to the child's birth.
   % endif
   % else:
-  % if user_gender == "birth_parent":
-  If you were married or in a civil union within 300 days of the child's upcoming birth, your spouse or ex-spouse must sign a Denial of Parentage form. You will get a completed copy of this form when you finish, but it will need to be signed by you and your spouse or ex-spouse.
+  % if user_role == "birth_parent":
+  If you are married or in a civil union within 300 days of the child's birth, your spouse or ex-spouse will need sign to a Denial of Parentage form. You will get a completed copy of this form when you finish, but it will need to be signed by you and your spouse or ex-spouse.
   % else:
-  If ${ other_name} was married or in a civil union within 300 days of the child's upcoming birth, the spouse or ex-spouse must fill out and sign a Denial of Parentage form. You will get a completed copy of this form when you finish, but it will need to be signed by ${other_name}'s spouse or ex-spouse.
+  If ${ other_name} is married or in a civil union within 300 days of the child's birth, the spouse or ex-spouse will need to sign a Denial of Parentage form. You will get a completed copy of this form when you finish, but it will need to be signed by ${other_name}'s spouse or ex-spouse.
   % endif
   % endif
   
@@ -579,14 +618,14 @@ fields:
 ---
 template: dissolution_info
 subject: |
-  % if user_gender == "birth_parent":
+  % if user_role == "birth_parent":
   **What if I have a court judgment saying my ex-spouse is not the child's parent?**
   % else:
   **What if ${other_name} has a court judgment saying their ex-spouse is not the child's parent?**
   % endif
 
 content: |  
-  % if user_gender == "gen_parent":
+  % if user_role == "gen_parent":
   If the marriage or civil union has ended and you have a Judgment for Dissolution of Marriage that states ${other_name}'s ex-spouse is not the parent of the child, you can select **No**. However, you will need to include a copy of the Judgment for Dissolution of Marriage with the VAP.
   % else:
   If the marriage or civil union has ended and you have a Judgment for Dissolution of Marriage that states your ex-spouse is not the parent of your child, you can select **No**. However, you will need to include a copy of the Judgment for Dissolution of Marriage with the VAP.
@@ -594,7 +633,7 @@ content: |
 ---
 id: gen parent birthdate
 question: |
-  % if user_gender == "birth_parent":
+  % if user_role == "birth_parent":
   What is ${other_name}'s date of birth?
   % else:
   What is your date of birth?
@@ -607,7 +646,7 @@ fields:
 ---
 id: birth parent birthdate
 question: |
-  % if user_gender == "gen_parent":
+  % if user_role == "gen_parent":
   What is ${other_name}'s date of birth?
   % else:
   What is your date of birth?
@@ -632,7 +671,7 @@ fields:
 ---
 id: gen parent address
 question: |
-  % if user_gender == "birth_parent":
+  % if user_role == "birth_parent":
   What is ${other_name}'s address?
   % else:
   What is your address?
@@ -650,7 +689,7 @@ fields:
 ---
 id: birth parent address
 question: |
-  % if user_gender == "gen_parent":
+  % if user_role == "gen_parent":
   What is ${other_name}'s address?
   % else:
   What is your address?
@@ -687,60 +726,63 @@ fields:
     required: False
 ---
 id: gen parent ssn
+continue button field: gen_parent.ssn
 question: |
-  % if user_gender == "birth_parent":
-  What is ${other_name}'s social security number?
+  % if user_role == "birth_parent":
+  About ${other_name}'s social security number
   % else:
-  What is your social security number?
+  About your social security number
   % endif
 subquestion: |
-  % if user_gender == "birth_parent":
-  This information is optional, but it helps identify ${other_name}.
+  % if user_role == "birth_parent":
+  You can add ${other_name}'s social security number to the VAP. This information is optional, but it helps identify them.
   % else:
-  This information is optional, but it helps identify you.
+  You can add ${other_name}'s social security number to the VAP. This information is optional, but it helps identify you.
   % endif
-fields:
- - Social security number: gen_parent.ssn
-   maxlength: 12
-   required: False
+#fields:
+# - Social security number: gen_parent.ssn
+#   maxlength: 12
+#   required: False
 ---
 id: birth parent ssn
+continue button field: birth_parent.ssn
 question: |
-  % if user_gender == "gen_parent":
-  What is ${other_name}'s social security number?
+  % if user_role == "gen_parent":
+  About ${other_name}'s social security number
   % else:
-  What is your social security number?
+  About your social security number
   % endif
 subquestion: |
-  % if user_gender == "gen_parent":
-  This information is optional, but it helps identify ${other_name}.
+  % if user_role == "gen_parent":
+  You can add ${other_name}'s social security number to the VAP. This information is optional, but it helps identify them.
   % else:
-  This information is optional, but it helps identify you.
+  You can add ${other_name}'s social security number to the VAP. This information is optional, but it helps identify you.
   % endif
-fields:
- - Social security number: birth_parent.ssn
-   maxlength: 12
-   required: False
+#fields:
+# - Social security number: birth_parent.ssn
+#   maxlength: 12
+#   required: False
 ---
 id: spouse ssn
+continue button field: spouse.ssn
 question: |
-  What is ${spouse.name_full()}'s social security number?
+  About ${spouse.name_full()}'s social security number
 subquestion: |
-  This information is optional, but it helps identify ${spouse.name_full()}.
-fields:
- - Social security number: spouse.ssn
-   maxlength: 12
-   required: False
+  You can add ${spouse.name_full()}'s social security number to the Denial of Parentage. This information is optional, but it helps identify ${spouse.name_full()}.
+#fields:
+# - Social security number: spouse.ssn
+#   maxlength: 12
+#   required: False
 ---
 id: gen parent phone
 question: |
-  % if user_gender == "birth_parent":
+  % if user_role == "birth_parent":
   What is ${other_name}'s contact information?
   % else:
   What is your contact information?
   % endif
 subquestion: |
-  % if user_gender == "birth_parent":
+  % if user_role == "birth_parent":
   This information is not required, but it can help the Illinois Department of Healthcare and Family Services contact ${other_name}.
   % else:
   This information is not required, but it can help the Illinois Department of Healthcare and Family Services contact you.
@@ -755,13 +797,13 @@ fields:
 ---
 id: birth parent phone
 question: |
-  % if user_gender == "gen_parent":
+  % if user_role == "gen_parent":
   What is ${other_name}'s contact information?
   % else:
   What is your contact information?
   % endif
 subquestion: |
-  % if user_gender == "birth_parent":
+  % if user_role == "birth_parent":
   This information is not required, but it can help the Illinois Department of Healthcare and Family Services contact you.
   % else:
   This information is not required, but it can help the Illinois Department of Healthcare and Family Services contact ${other_name}.
@@ -789,7 +831,7 @@ fields:
 ---
 id: gen parent birth check
 question: |
-  % if user_gender == "birth_parent":
+  % if user_role == "birth_parent":
   Was ${ other_name} born in the United States?
   % else:
   Were you born in the United States?
@@ -800,7 +842,7 @@ fields:
 ---
 id: birth parent birth check
 question: |
-  % if user_gender == "gen_parent":
+  % if user_role == "gen_parent":
   Was ${ other_name} born in the United States?
   % else:
   Were you born in the United States?
@@ -818,26 +860,28 @@ fields:
 ---
 id: gen parent us birthplace
 question: |
-  % if user_gender == "birth_parent":
+  % if user_role == "birth_parent":
   Where was ${ other_name } born?
   % else:
   Where were you born?
   % endif
 fields:
   - City: gen_parent.birth_city
+    maxlength: 30
   - State: gen_parent.birth_state
     code: |
       states_list() 
 ---
 id: birth parent us birthplace
 question: |
-  % if user_gender == "gen_parent":
+  % if user_role == "gen_parent":
   Where was ${ other_name } born?
   % else:
   Where were you born?
   % endif
 fields:
   - City: birth_parent.birth_city
+    maxlength: 30
   - State: birth_parent.birth_state
     code: |
       states_list() 
@@ -850,6 +894,7 @@ subquestion: |
 fields:
   - City: spouse.birth_city
     required: False
+    maxlength: 30
   - State: spouse.birth_state
     required: False
     code: |
@@ -857,25 +902,29 @@ fields:
 ---
 id: gen parent abroad birthplace
 question: |
-  % if user_gender == "birth_parent":
+  % if user_role == "birth_parent":
   Where was ${ other_name } born?
   % else:
   Where were you born?
   % endif
 fields:
   - City: gen_parent.birth_city
+    maxlength: 30
   - Country: gen_parent.birth_country
+    maxlength: 30
 ---
 id: birth parent abroad birthplace
 question: |
-  % if user_gender == "gen_parent":
+  % if user_role == "gen_parent":
   Where was ${ other_name } born?
   % else:
   Where were you born?
   % endif
 fields:
   - City: birth_parent.birth_city
+    maxlength: 30
   - Country: birth_parent.birth_country
+    maxlength: 30
 ---
 id: spouse abroad birthplace
 question: |
@@ -884,13 +933,15 @@ subquestion: |
   If you do not know, leave this question blank.
 fields:
   - City: spouse.birth_city
+    maxlength: 30
     required: False
   - Country: spouse.birth_country
     required: False
+    maxlength: 30
 ---
 id: birth parent name change
 question: |
-  % if user_gender == "birth_parent":
+  % if user_role == "birth_parent":
   Did you change your last name when you got married or entered into a civil union?
   % else:
   Did ${other_name} change their last name when they got married or entered into a civil union?
@@ -901,7 +952,7 @@ fields:
 ---
 id: birth parent former name
 question: |
-  % if user_gender == "birth_parent":
+  % if user_role == "birth_parent":
   What is your former last name?
   % else:
   What is ${other_name}'s former last name?
@@ -956,8 +1007,11 @@ question: |
   Where was ${child.name_full()} born?
 fields:
   - Hospital name: hospital_name
+    maxlength: 30
   - City: child.address.city
+    maxlength: 30
   - County: child.address.county
+    maxlength: 30
   - State: child.address.state
     code: |
       states_list() 
@@ -981,7 +1035,7 @@ continue button field: denial_intro
 question: |
   Denial of Parentage
 subquestion: |
-  % if user_gender == "birth_parent":
+  % if user_role == "birth_parent":
   Before you can file your forms, you and your spouse or ex-spouse need to sign a Denial of Parentage form.
   
   You will need to know your spouse or ex-spouse's address, their birth date and place of birth, and the date when you were married. If you do not enter this information now, you will have to add it to the Denial of Parentage form before you mail the forms to the state.
@@ -997,13 +1051,13 @@ subquestion: |
 ---
 id: marriage date
 question: |
-  % if user_gender == "birth_parent":
+  % if user_role == "birth_parent":
   When did you and ${ spouse.name_full()} marry or enter into a civil union?
   % else:
   When did ${other_name} and ${ spouse.name_full()} marry or enter into a civil union?
   % endif
 subquestion: |
-  % if user_gender != "birth_parent":
+  % if user_role != "birth_parent":
   If you do not know, leave this question blank.
   % endif
 fields:
@@ -1150,7 +1204,7 @@ continue button field: denial_witness_intro
 question: |
   Denial of Parentage form witness
 subquestion: |
-  % if user_gender == "birth_parent":
+  % if user_role == "birth_parent":
   You will also need someone to witness you and ${spouse.name_full()} sign the Denial of Parentage form.
   
   You do not have to sign the document at the same time as ${spouse.name_full()}.
@@ -1172,13 +1226,15 @@ question: |
   Reminder about VAP signatures
 subquestion: |
   ${other_name} will also need someone to witness their signature of the Voluntary Acknowledgement of Parentage. That witness will have to add their name and contact information, then sign and date the form.
+
+  When you and ${other_name} sign the VAP, you will also need to check the box at the top of the form to note if you signed it in a hospital or somewhere else.
 ---
 id: denial witness outro
 continue button field: denial_witness_outro
 question: |
   Reminder about Denial of Parentage signatures
 subquestion: |
-  % if user_gender == "birth_parent":
+  % if user_role == "birth_parent":
   ${spouse.name_full()} will also need someone to witness their signature of the Denial of Parentage. That witness will have to add their name and contact information, then sign and date the form.
   % else:
   ${birth_parent.name_full()} and ${spouse.name_full()} will both need someone to witness their signatures of the Denial of Parentage. That witness will have to add their name and contact information, then sign and date the form.
@@ -1241,8 +1297,7 @@ content: |
   [**Illinois Legal Aid Online**](https://www.illinoislegalaid.org)
 ---
 objects:
-  - al_user_bundle: ALDocumentBundle.using(elements=[instructions, vap_form, denial_of_parentage], filename="voluntary_acknowledgment_of_parentage.pdf", title="Download all forms")
-  - al_court_bundle: ALDocumentBundle.using(elements=[instructions, vap_form, denial_of_parentage], filename="voluntary_acknowledgment_of_parentage.pdf", title="Download all forms")
+  - al_user_bundle: ALDocumentBundle.using(elements=[instructions, vap_form, denial_of_parentage], filename="voluntary_acknowledgment_of_parentage.pdf", title="All forms")
 ---
 attachment:
   - name: Voluntary Acknowledgement of Parentage
@@ -1250,7 +1305,7 @@ attachment:
     filename: vap_form
     pdf template file: vap_form.pdf
     skip undefined: True
-    editable: False
+    editable: True
     fields:
       - "child_name_first": ${ child.name.first }
       - "child_name_middle": ${ child.name.middle if child.name.middle != "" else ""}
@@ -1311,18 +1366,18 @@ attachment:
           % else:
           ${spouse.name.last} ${spouse.name.suffix}
           % endif
-      - "gen_parent_witness_name": ${user_witness.name_full() if user_gender == "gen_parent" else ""}
-      - "gen_parent_witness_street": ${user_witness.address.line_one(bare=True) if user_gender == "gen_parent" else ""}
-      - "gen_parent_witness_city": ${user_witness.address.city if user_gender == "gen_parent" else ""}
-      - "gen_parent_witness_state": ${user_witness.address.state if user_gender == "gen_parent" else ""}
-      - "gen_parent_witness_zip": ${user_witness.address.zip if user_gender == "gen_parent" else ""}
-      - "gen_parent_witness_phone": ${phone_number_formatted(user_witness.phone_number) if user_gender == "gen_parent" else ""}
-      - "birth_parent_witness_name": ${user_witness.name_full() if user_gender == "birth_parent" else ""}
-      - "birth_parent_witness_street": ${user_witness.address.line_one(bare=True) if user_gender == "birth_parent" else ""}
-      - "birth_parent_witness_city": ${user_witness.address.city if user_gender == "birth_parent" else ""}
-      - "birth_parent_witness_state": ${user_witness.address.state if user_gender == "birth_parent" else ""}
-      - "birth_parent_witness_zip": ${user_witness.address.zip if user_gender == "birth_parent" else ""}
-      - "birth_parent_witness_phone": ${phone_number_formatted(user_witness.phone_number) if user_gender == "birth_parent" else ""}
+      - "gen_parent_witness_name": ${user_witness.name_full() if user_role == "gen_parent" else ""}
+      - "gen_parent_witness_street": ${user_witness.address.line_one(bare=True) if user_role == "gen_parent" else ""}
+      - "gen_parent_witness_city": ${user_witness.address.city if user_role == "gen_parent" else ""}
+      - "gen_parent_witness_state": ${user_witness.address.state if user_role == "gen_parent" else ""}
+      - "gen_parent_witness_zip": ${user_witness.address.zip if user_role == "gen_parent" else ""}
+      - "gen_parent_witness_phone": ${phone_number_formatted(user_witness.phone_number) if user_role == "gen_parent" else ""}
+      - "birth_parent_witness_name": ${user_witness.name_full() if user_role == "birth_parent" else ""}
+      - "birth_parent_witness_street": ${user_witness.address.line_one(bare=True) if user_role == "birth_parent" else ""}
+      - "birth_parent_witness_city": ${user_witness.address.city if user_role == "birth_parent" else ""}
+      - "birth_parent_witness_state": ${user_witness.address.state if user_role == "birth_parent" else ""}
+      - "birth_parent_witness_zip": ${user_witness.address.zip if user_role == "birth_parent" else ""}
+      - "birth_parent_witness_phone": ${phone_number_formatted(user_witness.phone_number) if user_role == "birth_parent" else ""}
       - "x_check": ${ True if child.gender == "X" else False}
       - "x_text": ${ "X" if child.gender == "X" else ""}
       - "gen_parent_email": ${gen_parent.email}
@@ -1334,7 +1389,7 @@ attachment:
     filename: denial_of_parentage
     pdf template file: denial_of_parentage.pdf
     skip undefined: True
-    editable: False
+    editable: True
     fields:
       - "child_name_first": ${ child.name.first }
       - "child_name_middle": ${ child.name.middle if child.name.middle != "" else ""}
@@ -1393,11 +1448,11 @@ attachment:
       - "spouse_witness_address": ${""}
       - "spouse_witness_phone": ${""}
       - "birth_parent_witness_name": ${user_denial_witness.name_full()}
-      - "birth_parent_witness_street": ${user_denial_witness.address.line_one(bare=True) if user_gender == "birth_parent" else ""}
-      - "birth_parent_witness_city": ${user_denial_witness.address.city if user_gender == "birth_parent" else ""}
-      - "birth_parent_witness_state": ${user_denial_witness.address.state if user_gender == "birth_parent" else ""}
-      - "birth_parent_witness_zip": ${user_denial_witness.address.zip if user_gender == "birth_parent" else ""}
-      - "birth_parent_witness_phone": ${phone_number_formatted(user_denial_witness.phone_number) if user_gender == "birth_parent" else ""}
+      - "birth_parent_witness_street": ${user_denial_witness.address.line_one(bare=True) if user_role == "birth_parent" else ""}
+      - "birth_parent_witness_city": ${user_denial_witness.address.city if user_role == "birth_parent" else ""}
+      - "birth_parent_witness_state": ${user_denial_witness.address.state if user_role == "birth_parent" else ""}
+      - "birth_parent_witness_zip": ${user_denial_witness.address.zip if user_role == "birth_parent" else ""}
+      - "birth_parent_witness_phone": ${phone_number_formatted(user_denial_witness.phone_number) if user_role == "birth_parent" else ""}
       - "x_check": ${ True if child.gender == "X" else False}
       - "x_text": ${ "X" if child.gender == "X" else ""}
       - "spouse_email": ${spouse.email}
@@ -1426,10 +1481,10 @@ question: |
 subquestion: |
   Edit your answers below.
 review: 
-  - Edit: user_gender
+  - Edit: user_role
     button: |
       **Which parent are you?**
-      % if user_gender == "gen_parent":
+      % if user_role == "gen_parent":
       The non-birth parent
       % else:
       The birth parent
@@ -1438,7 +1493,7 @@ review:
       <h4>Birth parent's information</h4>
   - Edit: birth_parent.name.first
     button: |
-      % if user_gender == "gen_parent":
+      % if user_role == "gen_parent":
       **The birth parent's name:**
       % else:
       **Your name:**
@@ -1446,7 +1501,7 @@ review:
       ${birth_parent.name_full()}
   - Edit: birth_parent.birth_date
     button: |
-      % if user_gender == "gen_parent":
+      % if user_role == "gen_parent":
       **${birth_parent.name_full()}'s date of birth:**
       % else:
       **Your date of birth:**
@@ -1454,7 +1509,7 @@ review:
       ${birth_parent.birth_date}
   - Edit: birth_parent.address.address
     button: |
-      % if user_gender == "gen_parent":
+      % if user_role == "gen_parent":
       **${birth_parent.name_full()}'s address:**
       % else:
       **Your address:**
@@ -1462,7 +1517,7 @@ review:
       ${birth_parent.address.on_one_line(bare=True)}
   - Edit: birth_parent.ssn
     button: |
-      % if user_gender == "gen_parent":
+      % if user_role == "gen_parent":
       **${birth_parent.name_full()}'s Social Security number:**
       % else:
       **Your Social Security number:**
@@ -1470,7 +1525,7 @@ review:
       ${birth_parent.ssn}
   - Edit: birth_parent.phone_number
     button: |
-      % if user_gender == "gen_parent":
+      % if user_role == "gen_parent":
       **${birth_parent.name_full()}'s contact information:**
       % else:
       **Your contact information:**
@@ -1488,7 +1543,7 @@ review:
       % endif
   - Edit: birth_parent.changed_name
     button: |
-      % if user_gender == "birth_parent":
+      % if user_role == "birth_parent":
       **Did you change your last name when you got married or entered into a civil union?**
       % else:
       **Did ${other_name} change their last name when they got married or entered into a civil union?**
@@ -1497,7 +1552,7 @@ review:
     show if: other_marriage
   - Edit: birth_parent.former_name
     button: |
-      % if user_gender == "birth_parent":
+      % if user_role == "birth_parent":
       **What is your former last name?**
       % else:
       **What is ${birth_parent.name_full()}'s former last name?**
@@ -1506,7 +1561,7 @@ review:
     show if: birth_parent.changed_name
   - Edit: birth_parent.born_in_us
     button: |
-      % if user_gender == "gen_parent":
+      % if user_role == "gen_parent":
       **Was ${birth_parent.name_full()} born in the United States?**
       % else:
       **Were you born in the United States?**
@@ -1514,7 +1569,7 @@ review:
       ${word(yesno(birth_parent.born_in_us))}
   - Edit: birth_parent.birth_state
     button: |
-      % if user_gender == "gen_parent":
+      % if user_role == "gen_parent":
       **Where was ${ birth_parent.name_full() } born?**
       % else:
       **Where were you born?**
@@ -1523,7 +1578,7 @@ review:
     show if: birth_parent.born_in_us
   - Edit: birth_parent.birth_country
     button: |
-      % if user_gender == "gen_parent":
+      % if user_role == "gen_parent":
       **Where was ${ birth_parent.name_full() } born?**
       % else:
       **Where were you born?**
@@ -1534,7 +1589,7 @@ review:
       <h4>Other parent's information</h4>
   - Edit: gen_parent.name.first
     button: |
-      % if user_gender == "birth_parent":
+      % if user_role == "birth_parent":
       **The other parent's name:**
       % else:
       **Your name:**
@@ -1542,7 +1597,7 @@ review:
       ${gen_parent.name_full()}
   - Edit: gen_parent.birth_date
     button: |
-      % if user_gender == "birth_parent":
+      % if user_role == "birth_parent":
       **${gen_parent.name_full()}'s date of birth:**
       % else:
       **Your date of birth:**
@@ -1550,7 +1605,7 @@ review:
       ${gen_parent.birth_date}
   - Edit: gen_parent.address.address
     button: |
-      % if user_gender == "birth_parent":
+      % if user_role == "birth_parent":
       **${gen_parent.name_full()}'s address:**
       % else:
       **Your address:**
@@ -1558,7 +1613,7 @@ review:
       ${gen_parent.address.on_one_line(bare=True)}
   - Edit: gen_parent.ssn
     button: |
-      % if user_gender == "birth_parent":
+      % if user_role == "birth_parent":
       **${gen_parent.name_full()}'s Social Security number:**
       % else:
       **Your Social Security number:**
@@ -1566,7 +1621,7 @@ review:
       ${gen_parent.ssn}
   - Edit: gen_parent.phone_number
     button: |
-      % if user_gender == "birth_parent":
+      % if user_role == "birth_parent":
       **${gen_parent.name_full()}'s contact information:**
       % else:
       **Your contact information:**
@@ -1584,7 +1639,7 @@ review:
       % endif
   - Edit: gen_parent.born_in_us
     button: |
-      % if user_gender == "birth_parent":
+      % if user_role == "birth_parent":
       **Was ${gen_parent.name_full()} born in the United States?**
       % else:
       **Were you born in the United States?**
@@ -1592,7 +1647,7 @@ review:
       ${word(yesno(gen_parent.born_in_us))}
   - Edit: gen_parent.birth_state
     button: |
-      % if user_gender == "birth_parent":
+      % if user_role == "birth_parent":
       **Where was ${ gen_parent.name_full() } born?**
       % else:
       **Where were you born?**
@@ -1601,7 +1656,7 @@ review:
     show if: gen_parent.born_in_us
   - Edit: gen_parent.birth_country
     button: |
-      % if user_gender == "birth_parent":
+      % if user_role == "birth_parent":
       **Where was ${ gen_parent.name_full() } born?**
       % else:
       **Where were you born?**
@@ -1653,7 +1708,7 @@ review:
       <h4>Previous marriage</h4>
   - Edit: other_marriage
     button: |
-      % if user_gender == "birth_parent":
+      % if user_role == "birth_parent":
       **Were you married to or in a civil union with someone else when the child was born or conceived?**
       % else:
       **Was ${other_name} married to or in a civil union with someone else when the child was born or conceived?**
@@ -1662,7 +1717,7 @@ review:
     show if: not were_married
   - Edit: spouse.name.first
     button: |
-      % if user_gender == "birth_parent":
+      % if user_role == "birth_parent":
       **Your spouse or ex-spouse's name:**
       % else:
       **${birth_parent.name_full()}'s spouse or ex-spouse's name:**
@@ -1720,7 +1775,7 @@ review:
     show if: other_marriage == True and spouse.born_in_us == False 
   - Edit: marriage_date
     button: |
-      % if user_gender == "birth_parent":
+      % if user_role == "birth_parent":
       **Date you and ${spouse.name_full()} married or entered into a civil union:**
       % else:
       **Date ${birth_parent.name_full()} and ${spouse.name_full()} married or entered into a civil union:**
@@ -1752,22 +1807,22 @@ review:
     button: |
       **Do you know who will witness your signature of the Denial of Parentage?**
       ${word(yesno(user_denial_witness_known))}
-    show if: user_gender == "birth_parent"
+    show if: user_role == "birth_parent"
   - Edit: user_denial_witness.name.first
     button: |
       **Denial of Parentage witness's name:**
       ${user_denial_witness.name_full()}
-    show if: user_denial_witness_known == True and user_gender == "birth_parent"
+    show if: user_denial_witness_known == True and user_role == "birth_parent"
   - Edit: user_denial_witness.address.address
     button: |
       **${user_denial_witness.name_full()}'s address:**
       ${user_denial_witness.address.on_one_line(bare=True)}
-    show if: user_denial_witness_known == True and user_gender == "birth_parent"
+    show if: user_denial_witness_known == True and user_role == "birth_parent"
   - Edit: user_denial_witness.phone_number
     button: |
       **${user_denial_witness.name_full()}'s phone number:**
       ${phone_number_formatted(user_denial_witness.phone_number)}
-    show if: user_denial_witness_known == True and user_gender == "birth_parent"
+    show if: user_denial_witness_known == True and user_role == "birth_parent"
 ---
 need:
   - end_in_county
@@ -1779,17 +1834,17 @@ question: |
 subquestion: |
   Edit your answers below.
 review:
-  - Edit: user_gender
+  - Edit: user_role
     button: |
       **Which parent are you?**
-      % if user_gender == "gen_parent":
+      % if user_role == "gen_parent":
       The non-birth parent
       % else:
       The birth parent
       % endif
   - Edit: birth_parent.name.first
     button: |
-      % if user_gender == "gen_parent":
+      % if user_role == "gen_parent":
       **The birth parent's name:**
       % else:
       **Your name:**
@@ -1797,7 +1852,7 @@ review:
       ${birth_parent.name_full()}
   - Edit: gen_parent.name.first
     button: |
-      % if user_gender == "birth_parent":
+      % if user_role == "birth_parent":
       **The other parent's name:**
       % else:
       **Your name:**
@@ -1819,7 +1874,7 @@ review:
     show if: child_born
   - Edit: other_marriage
     button: |
-      % if user_gender == "birth_parent":
+      % if user_role == "birth_parent":
       **Were you married to or in a civil union with someone else when the child was born or conceived?**
       % else:
       **Was ${other_name} married to or in a civil union with someone else when the child was born or conceived?**
@@ -1831,7 +1886,7 @@ id: gen parent review screen
 section: Other parent's information
 event: section_gen_parent
 question: |
-  % if user_gender == "birth_parent":
+  % if user_role == "birth_parent":
   Other parent's information
   % else:
   Your information
@@ -1841,7 +1896,7 @@ subquestion: |
 review:
   - Edit: gen_parent.name.first
     button: |
-      % if user_gender == "birth_parent":
+      % if user_role == "birth_parent":
       **The other parent's name:**
       % else:
       **Your name:**
@@ -1849,7 +1904,7 @@ review:
       ${gen_parent.name_full()}
   - Edit: gen_parent.birth_date
     button: |
-      % if user_gender == "birth_parent":
+      % if user_role == "birth_parent":
       **${gen_parent.name_full()}'s date of birth:**
       % else:
       **Your date of birth:**
@@ -1857,7 +1912,7 @@ review:
       ${gen_parent.birth_date}
   - Edit: gen_parent.address.address
     button: |
-      % if user_gender == "birth_parent":
+      % if user_role == "birth_parent":
       **${gen_parent.name_full()}'s address:**
       % else:
       **Your address:**
@@ -1865,7 +1920,7 @@ review:
       ${gen_parent.address.on_one_line(bare=True)}
   - Edit: gen_parent.ssn
     button: |
-      % if user_gender == "birth_parent":
+      % if user_role == "birth_parent":
       **${gen_parent.name_full()}'s Social Security number:**
       % else:
       **Your Social Security number:**
@@ -1873,7 +1928,7 @@ review:
       ${gen_parent.ssn}
   - Edit: gen_parent.phone_number
     button: |
-      % if user_gender == "birth_parent":
+      % if user_role == "birth_parent":
       **${gen_parent.name_full()}'s contact information:**
       % else:
       **Your contact information:**
@@ -1891,7 +1946,7 @@ review:
       % endif
   - Edit: gen_parent.born_in_us
     button: |
-      % if user_gender == "birth_parent":
+      % if user_role == "birth_parent":
       **Was ${gen_parent.name_full()} born in the United States?**
       % else:
       **Were you born in the United States?**
@@ -1899,7 +1954,7 @@ review:
       ${word(yesno(gen_parent.born_in_us))}
   - Edit: gen_parent.birth_state
     button: |
-      % if user_gender == "birth_parent":
+      % if user_role == "birth_parent":
       **Where was ${ gen_parent.name_full() } born?**
       % else:
       **Where were you born?**
@@ -1908,7 +1963,7 @@ review:
     show if: gen_parent.born_in_us
   - Edit: gen_parent.birth_country
     button: |
-      % if user_gender == "birth_parent":
+      % if user_role == "birth_parent":
       **Where was ${ gen_parent.name_full() } born?**
       % else:
       **Where were you born?**
@@ -1924,7 +1979,7 @@ id: birth parent review screen
 section: Birth parent's information
 event: section_birth_parent
 question: |
-  % if user_gender == "birth_parent":
+  % if user_role == "birth_parent":
   Your information
   % else:
   Birth parent's information
@@ -1934,7 +1989,7 @@ subquestion: |
 review:
   - Edit: birth_parent.name.first
     button: |
-      % if user_gender == "gen_parent":
+      % if user_role == "gen_parent":
       **The birth parent's name:**
       % else:
       **Your name:**
@@ -1942,7 +1997,7 @@ review:
       ${birth_parent.name_full()}
   - Edit: birth_parent.birth_date
     button: |
-      % if user_gender == "gen_parent":
+      % if user_role == "gen_parent":
       **${birth_parent.name_full()}'s date of birth:**
       % else:
       **Your date of birth:**
@@ -1950,7 +2005,7 @@ review:
       ${birth_parent.birth_date}
   - Edit: birth_parent.address.address
     button: |
-      % if user_gender == "gen_parent":
+      % if user_role == "gen_parent":
       **${birth_parent.name_full()}'s address:**
       % else:
       **Your address:**
@@ -1958,7 +2013,7 @@ review:
       ${birth_parent.address.on_one_line(bare=True)}
   - Edit: birth_parent.ssn
     button: |
-      % if user_gender == "gen_parent":
+      % if user_role == "gen_parent":
       **${birth_parent.name_full()}'s Social Security number:**
       % else:
       **Your Social Security number:**
@@ -1966,7 +2021,7 @@ review:
       ${birth_parent.ssn}
   - Edit: birth_parent.phone_number
     button: |
-      % if user_gender == "gen_parent":
+      % if user_role == "gen_parent":
       **${birth_parent.name_full()}'s contact information:**
       % else:
       **Your contact information:**
@@ -1984,7 +2039,7 @@ review:
       % endif
   - Edit: birth_parent.changed_name
     button: |
-      % if user_gender == "birth_parent":
+      % if user_role == "birth_parent":
       **Did you change your last name when you got married or entered into a civil union?**
       % else:
       **Did ${other_name} change their last name when they got married or entered into a civil union?**
@@ -1993,7 +2048,7 @@ review:
     show if: other_marriage
   - Edit: birth_parent.former_name
     button: |
-      % if user_gender == "birth_parent":
+      % if user_role == "birth_parent":
       **What is your former last name?**
       % else:
       **What is ${birth_parent.name_full()}'s former last name?**
@@ -2002,7 +2057,7 @@ review:
     show if: birth_parent.changed_name
   - Edit: birth_parent.born_in_us
     button: |
-      % if user_gender == "gen_parent":
+      % if user_role == "gen_parent":
       **Was ${birth_parent.name_full()} born in the United States?**
       % else:
       **Were you born in the United States?**
@@ -2010,7 +2065,7 @@ review:
       ${word(yesno(birth_parent.born_in_us))}
   - Edit: birth_parent.birth_state
     button: |
-      % if user_gender == "gen_parent":
+      % if user_role == "gen_parent":
       **Where was ${ birth_parent.name_full() } born?**
       % else:
       **Where were you born?**
@@ -2019,7 +2074,7 @@ review:
     show if: birth_parent.born_in_us
   - Edit: birth_parent.birth_country
     button: |
-      % if user_gender == "gen_parent":
+      % if user_role == "gen_parent":
       **Where was ${ birth_parent.name_full() } born?**
       % else:
       **Where were you born?**
@@ -2028,7 +2083,7 @@ review:
     show if: birth_parent.born_in_us == False
   - Edit: other_marriage
     button: |
-      % if user_gender == "birth_parent":
+      % if user_role == "birth_parent":
       **Were you married to or in a civil union with someone else when the child was born or conceived?**
       % else:
       **Was ${other_name} married to or in a civil union with someone else when the child was born or conceived?**
@@ -2091,7 +2146,7 @@ subquestion: |
 review:
   - Edit: other_marriage
     button: |
-      % if user_gender == "birth_parent":
+      % if user_role == "birth_parent":
       **Were you married to or in a civil union with someone else when the child was born or conceived?**
       % else:
       **Was ${other_name} married to or in a civil union with someone else when the child was born or conceived?**
@@ -2100,7 +2155,7 @@ review:
     show if: were_married == False
   - Edit: spouse.name.first
     button: |
-      % if user_gender == "birth_parent":
+      % if user_role == "birth_parent":
       **Your spouse or ex-spouse's name:**
       % else:
       **${birth_parent.name_full()}'s spouse or ex-spouse's name:**
@@ -2154,7 +2209,7 @@ review:
     show if: other_marriage and not spouse.born_in_us
   - Edit: marriage_date
     button: |
-      % if user_gender == "birth_parent":
+      % if user_role == "birth_parent":
       **Date you and ${spouse.name_full()} married or entered into a civil union:**
       % else:
       **Date ${birth_parent.name_full()} and ${spouse.name_full()} married or entered into a civil union:**
@@ -2193,19 +2248,19 @@ review:
     button: |
       **Do you know who will witness your signature of the Denial of Parentage?**
       ${word(yesno(user_denial_witness_known))}
-    show if: user_gender == "birth_parent"
+    show if: user_role == "birth_parent"
   - Edit: user_denial_witness.name.first
     button: |
       **Denial of Parentage witness's name:**
       ${user_denial_witness.name_full()}
-    show if: user_denial_witness_known == True and user_gender == "birth_parent"
+    show if: user_denial_witness_known == True and user_role == "birth_parent"
   - Edit: user_denial_witness.address.address
     button: |
       **${user_denial_witness.name_full()}'s address:**
       ${user_denial_witness.address.on_one_line(bare=True)}
-    show if: user_denial_witness_known == True and user_gender == "birth_parent"
+    show if: user_denial_witness_known == True and user_role == "birth_parent"
   - Edit: user_denial_witness.phone_number
     button: |
       **${user_denial_witness.name_full()}'s phone number:**
       ${phone_number_formatted(user_denial_witness.phone_number)}
-    show if: user_denial_witness_known == True and user_gender == "birth_parent"
+    show if: user_denial_witness_known == True and user_role == "birth_parent"

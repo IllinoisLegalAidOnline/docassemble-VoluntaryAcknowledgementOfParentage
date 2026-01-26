@@ -69,9 +69,8 @@ code: |
   birth_parent.address.address
   birth_parent_ssn
   birth_parent.phone_number
-  if other_marriage == True:
-    if birth_parent.changed_name == True:
-      birth_parent.former_name
+  if birth_parent.changed_name:
+    birth_parent.former_name
   if birth_parent.born_in_us == True:
     birth_parent.birth_state
   else:
@@ -184,6 +183,8 @@ subquestion: |
   Welcome to Illinois Legal Aid Online's **Voluntary Acknowledgement of Parentage - VAP** Easy Form.
 
   This program helps you create documents to tell the state who a child's parent is. The form it creates is a Voluntary Acknowledgement of Parentage, also called a VAP. This program can also make a Denial of Parentage form to tell the state that the birth parent's spouse or ex-spouse is not the child's parent.
+
+  The [**Equality for Every Family Act**](https://www.gladlaw.org/the-equality-for-every-family-act-signed-into-illinois-law/) allows a partner in a same-sex relationship to use a VAP to acknowledge parentage of a child.
   
    Once legal parentage is established, the parent:
 
@@ -265,7 +266,7 @@ subquestion: |
   * Both parents' address, birth date, and birth place, and
   * The child's name and birth date.
 
-  If the child was born by **{surrogacy}**, you cannot use a Voluntary Acknowledgment of Parentage. You may need to [**Get Legal Help**](https://www.illinoislegalaid.org/get-legal-help).
+  If the child was born by **{surrogacy}**, you cannot use a Voluntary Acknowledgment of Parentage. If the person who was pregnant with the child was not intended to be the child's parent, you should not use this program. You may need to [**Get Legal Help**](https://www.illinoislegalaid.org/get-legal-help).
 terms:
   - Birth parent: |
       The birth parent is the parent who gave birth to the child.
@@ -405,6 +406,10 @@ question: |
   % else:
   Who is the birth parent of the child?
   % endif
+subquestion: |
+  % if user_role != "birth_parent":
+  This is the person who gave birth to the child.
+  % endif
 fields:
   - First: birth_parent.name.first
   - Middle: birth_parent.name.middle
@@ -510,7 +515,7 @@ question: |
   % if child_born:
   Were you married to or in a civil union with ${ other_name} when the child was born?
   % else:
-  Will you be married to or in a civil untion with ${other_name} when the child is born?
+  Will you be married to or in a civil union with ${other_name} when the child is born?
   % endif
 subquestion: |
   % if user_role == "birth_parent":
@@ -939,9 +944,9 @@ fields:
 id: birth parent name change
 question: |
   % if user_role == "birth_parent":
-  Did you change your last name when you got married or entered into a civil union?
+  Have you ever changed your last name after getting married?
   % else:
-  Did ${other_name} change their last name when they got married or entered into a civil union?
+  HAs ${other_name} ever changed their last name after getting married?
   % endif
 fields:
   - no label: birth_parent.changed_name
@@ -953,6 +958,12 @@ question: |
   What is your former last name?
   % else:
   What is ${other_name}'s former last name?
+  % endif
+subquestion: |
+  % if user_role == "birth_parent":
+  If you have changed your last name multiple names, you should enter what your last name was before your first marriage.
+  % else:
+  If they have changed their last name multiple names, you should enter what their last name was before their first marriage.
   % endif
 fields:
   - Former name: birth_parent.former_name
@@ -1079,7 +1090,7 @@ subquestion: |
   The witness must be an adult age 18 or older but cannot be you, ${other_name}, or the spouse or ex-spouse signing the Denial of Parentage.
   % endif
   % else:
-  The witness must be an adult age 18 or older but cannot be you, or ${other_name}.
+  The witness must be an adult age 18 or older but cannot be you or ${other_name}.
   % endif
   
   You do not have to sign at the same time as ${other_name }.
@@ -1542,12 +1553,11 @@ review:
   - Edit: birth_parent.changed_name
     button: |
       % if user_role == "birth_parent":
-      **Did you change your last name when you got married or entered into a civil union?**
+      **Have you ever changed your last name?**
       % else:
-      **Did ${other_name} change their last name when they got married or entered into a civil union?**
+      **Has ${other_name} ever changed their last name?**
       % endif
       ${word(yesno(birth_parent.changed_name))}
-    show if: other_marriage
   - Edit: birth_parent.former_name
     button: |
       % if user_role == "birth_parent":
@@ -2038,12 +2048,11 @@ review:
   - Edit: birth_parent.changed_name
     button: |
       % if user_role == "birth_parent":
-      **Did you change your last name when you got married or entered into a civil union?**
+      **Have you ever changed your last name?**
       % else:
-      **Did ${other_name} change their last name when they got married or entered into a civil union?**
+      **Has ${other_name} ever changed their last name?**
       % endif
       ${word(yesno(birth_parent.changed_name))}
-    show if: other_marriage
   - Edit: birth_parent.former_name
     button: |
       % if user_role == "birth_parent":

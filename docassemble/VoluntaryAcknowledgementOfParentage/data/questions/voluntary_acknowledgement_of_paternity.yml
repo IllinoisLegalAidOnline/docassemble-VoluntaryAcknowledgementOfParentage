@@ -57,6 +57,8 @@ code: |
   if child_born == False:
     not_yet_born
   else:
+    if not child_born_in_us:
+      not_in_us_kickout
     if on_certificate == True:
       certificate_kickout
   if were_married == False:
@@ -481,6 +483,27 @@ question: |
 fields:
   - no label: child_born
     datatype: yesnoradio
+---
+id: child born in us
+question: |
+  Was the child born in the United States?
+fields:
+  - no label: child_born_in_us
+    datatype: yesnoradio
+---
+id: not in us kickout
+event: not_in_us_kickout
+question: |
+  Sorry
+subquestion: |
+  The Voluntary Acknowledgment of Parentage can only be used for a child born in the United States.
+
+  You may want to talk to a lawyer about your child's parentage. Use [**Get Legal Help**](https://www.illinoislegalaid.org/get-legal-help) to find free or low-cost legal services in your area.
+
+  If you made a mistake, you can click the **Back** button or **Restart** the interview.
+buttons:
+  - Exit: exit
+  - Restart: restart
 ---
 id: not yet born
 continue button field: not_yet_born
@@ -961,9 +984,9 @@ question: |
   % endif
 subquestion: |
   % if user_role == "birth_parent":
-  If you have changed your last name multiple names, you should enter what your last name was before your first marriage.
+  If you have changed your last name multiple names, you should enter what your last name was before your first marriage. This is sometimes known as a "maiden name."
   % else:
-  If they have changed their last name multiple names, you should enter what their last name was before their first marriage.
+  If they have changed their last name multiple names, you should enter what their last name was before their first marriage. This is sometimes known as a "maiden name."
   % endif
 fields:
   - Former name: birth_parent.former_name

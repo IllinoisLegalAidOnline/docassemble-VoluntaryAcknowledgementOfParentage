@@ -1412,6 +1412,7 @@ attachment:
       - "birth_parent_witness_phone": ${phone_number_formatted(user_witness.phone_number) if user_role == "birth_parent" else ""}
       - "x_check": ${ True if child.gender == "X" else False}
       - "x_text": ${ "X" if child.gender == "X" else ""}
+      - "as_on_cert": ${"as on birth certificate" if child.gender == "X" else ""}
       - "gen_parent_email": ${gen_parent.email}
       - "birth_parent_email": ${birth_parent.email}
 ---
@@ -1487,6 +1488,7 @@ attachment:
       - "birth_parent_witness_phone": ${phone_number_formatted(user_denial_witness.phone_number) if user_role == "birth_parent" else ""}
       - "x_check": ${ True if child.gender == "X" else False}
       - "x_text": ${ "X" if child.gender == "X" else ""}
+      - "as_on_cert": ${"as on birth certificate" if child.gender == "X" else ""}
       - "spouse_email": ${spouse.email}
       - "birth_parent_email": ${birth_parent.email}
 ---

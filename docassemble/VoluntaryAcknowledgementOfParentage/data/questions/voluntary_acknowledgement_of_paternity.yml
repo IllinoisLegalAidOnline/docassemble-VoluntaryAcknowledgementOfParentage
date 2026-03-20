@@ -510,7 +510,7 @@ continue button field: not_yet_born
 question: |
   Form not valid until child is born  
 subquestion: |
-  The Voluntary Acknowledgment of Parentage (VAP) may be completed before your child is born, but is not valid until the child is born and the VAP is filed with the Illinios Department of Healthcare and Family Services (HFS).
+  The Voluntary Acknowledgment of Parentage (VAP) may be completed before your child is born, but is not valid until the child is born and the VAP is filed with the Illinois Department of Healthcare and Family Services (HFS).
 
   You will need to add information about your child's birth and name to the VAP after they are born. Or, if you would prefer, you can:
   
@@ -764,9 +764,9 @@ question: |
   % endif
 subquestion: |
   % if user_role == "birth_parent":
-  ${other_name}'s social security number can be added to the VAP. This information is optional, but it helps identify them.
+  ${other_name}'s social security number can be added to the VAP. This information is optional, but it helps identify them. You can write the last four digits of their social security number on the form after you download it.
   % else:
-  Your social security number can be added to the VAP. This information is optional, but it helps identify you.
+  Your social security number can be added to the VAP. This information is optional, but it helps identify you. You can write the last four digits of your social security number on the form after you download it.
   % endif
 #fields:
 # - Social security number: gen_parent_ssn
@@ -783,9 +783,9 @@ question: |
   % endif
 subquestion: |
   % if user_role == "gen_parent":
-  ${other_name}'s social security number can be added to the VAP. This information is optional, but it helps identify them.
+  ${other_name}'s social security number can be added to the VAP. This information is optional, but it helps identify them. You can write the last four digits of their social security number on the form after you download it.
   % else:
-  Your social security number can be added to the VAP. This information is optional, but it helps identify you.
+  Your social security number can be added to the VAP. This information is optional, but it helps identify you. You can write the last four digits of your social security number on the form after you download it.
   % endif
 ---
 id: spouse ssn
@@ -793,7 +793,7 @@ continue button field: spouse_ssn
 question: |
   About ${spouse.name_full()}'s social security number
 subquestion: |
-  ${spouse.name_full()}'s social security number can be added to the Denial of Parentage. This information is optional, but it helps identify ${spouse.name_full()}.
+  ${spouse.name_full()}'s social security number can be added to the Denial of Parentage. This information is optional, but it helps identify ${spouse.name_full()}. You can write the last four digits of their social security number on the form after you download it.
 #fields:
 # - Social security number: spouse_ssn
 #   maxlength: 12
@@ -969,7 +969,7 @@ question: |
   % if user_role == "birth_parent":
   Have you ever changed your last name after getting married?
   % else:
-  HAs ${other_name} ever changed their last name after getting married?
+  Has ${other_name} ever changed their last name after getting married?
   % endif
 fields:
   - no label: birth_parent.changed_name
@@ -1515,6 +1515,8 @@ question: |
 subquestion: |
   Edit your answers below.
 review: 
+  - note: |
+      <h4>Parents</h4>
   - Edit: user_role
     button: |
       **Which parent are you?**
@@ -1549,14 +1551,6 @@ review:
       **Your address:**
       % endif
       ${birth_parent.address.on_one_line(bare=True)}
-  - Edit: birth_parent_ssn
-    button: |
-      % if user_role == "gen_parent":
-      **${birth_parent.name_full()}'s Social Security number:**
-      % else:
-      **Your Social Security number:**
-      % endif
-      ${birth_parent_ssn}
   - Edit: birth_parent.phone_number
     button: |
       % if user_role == "gen_parent":
@@ -1644,14 +1638,6 @@ review:
       **Your address:**
       % endif
       ${gen_parent.address.on_one_line(bare=True)}
-  - Edit: gen_parent_ssn
-    button: |
-      % if user_role == "birth_parent":
-      **${gen_parent.name_full()}'s Social Security number:**
-      % else:
-      **Your Social Security number:**
-      % endif
-      ${gen_parent_ssn}
   - Edit: gen_parent.phone_number
     button: |
       % if user_role == "birth_parent":
@@ -1766,11 +1752,6 @@ review:
     button: |
       **${spouse.name_full()}'s address:**
       ${spouse.address.on_one_line(bare=True)}
-    show if: other_marriage
-  - Edit: spouse_ssn
-    button: |
-      **${spouse.name_full()}'s Social Security number:**
-      ${spouse_ssn}
     show if: other_marriage
   - Edit: spouse.phone_number
     button: |
@@ -1951,14 +1932,6 @@ review:
       **Your address:**
       % endif
       ${gen_parent.address.on_one_line(bare=True)}
-  - Edit: gen_parent_ssn
-    button: |
-      % if user_role == "birth_parent":
-      **${gen_parent.name_full()}'s Social Security number:**
-      % else:
-      **Your Social Security number:**
-      % endif
-      ${gen_parent_ssn}
   - Edit: gen_parent.phone_number
     button: |
       % if user_role == "birth_parent":
@@ -2044,14 +2017,6 @@ review:
       **Your address:**
       % endif
       ${birth_parent.address.on_one_line(bare=True)}
-  - Edit: birth_parent_ssn
-    button: |
-      % if user_role == "gen_parent":
-      **${birth_parent.name_full()}'s Social Security number:**
-      % else:
-      **Your Social Security number:**
-      % endif
-      ${birth_parent_ssn}
   - Edit: birth_parent.phone_number
     button: |
       % if user_role == "gen_parent":
@@ -2203,11 +2168,6 @@ review:
     button: |
       **${spouse.name_full()}'s address:**
       ${spouse.address.on_one_line(bare=True)}
-    show if: other_marriage
-  - Edit: spouse_ssn
-    button: |
-      **${spouse.name_full()}'s Social Security number:**
-      ${spouse_ssn}
     show if: other_marriage
   - Edit: spouse.phone_number
     button: |

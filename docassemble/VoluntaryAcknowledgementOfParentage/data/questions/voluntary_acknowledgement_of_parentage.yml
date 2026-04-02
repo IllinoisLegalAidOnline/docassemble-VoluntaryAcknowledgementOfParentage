@@ -764,9 +764,9 @@ question: |
   % endif
 subquestion: |
   % if user_role == "birth_parent":
-  ${other_name}'s social security number can be added to the VAP. This information is optional, but it helps identify them. You can write the last four digits of their social security number on the form after you download it.
+  ${other_name}'s social security number can be added to the VAP. This information is optional, but it helps identify them. You can write their social security number on the form after you download it.
   % else:
-  Your social security number can be added to the VAP. This information is optional, but it helps identify you. You can write the last four digits of your social security number on the form after you download it.
+  Your social security number can be added to the VAP. This information is optional, but it helps identify you. You can write your social security number on the form after you download it.
   % endif
 #fields:
 # - Social security number: gen_parent_ssn
@@ -783,9 +783,9 @@ question: |
   % endif
 subquestion: |
   % if user_role == "gen_parent":
-  ${other_name}'s social security number can be added to the VAP. This information is optional, but it helps identify them. You can write the last four digits of their social security number on the form after you download it.
+  ${other_name}'s social security number can be added to the VAP. This information is optional, but it helps identify them. You can write their social security number on the form after you download it.
   % else:
-  Your social security number can be added to the VAP. This information is optional, but it helps identify you. You can write the last four digits of your social security number on the form after you download it.
+  Your social security number can be added to the VAP. This information is optional, but it helps identify you. You can write your social security number on the form after you download it.
   % endif
 ---
 id: spouse ssn
@@ -793,7 +793,7 @@ continue button field: spouse_ssn
 question: |
   About ${spouse.name_full()}'s social security number
 subquestion: |
-  ${spouse.name_full()}'s social security number can be added to the Denial of Parentage. This information is optional, but it helps identify ${spouse.name_full()}. You can write the last four digits of their social security number on the form after you download it.
+  ${spouse.name_full()}'s social security number can be added to the Denial of Parentage. This information is optional, but it helps identify ${spouse.name_full()}. You can write their social security number on the form after you download it.
 #fields:
 # - Social security number: spouse_ssn
 #   maxlength: 12

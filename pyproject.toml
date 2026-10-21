@@ -1,12 +1,12 @@
 [build-system]
 requires = [
-    "setuptools==80.9.0",
+    "setuptools>=80.9.0",
 ]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "docassemble.VoluntaryAcknowledgementOfParentage"
-version = "1.0.18"
+version = "1.0.19"
 description = "A docassemble extension."
 readme = "README.md"
 authors = [

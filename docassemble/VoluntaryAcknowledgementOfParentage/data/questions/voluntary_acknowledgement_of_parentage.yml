@@ -18,7 +18,6 @@ objects:
   - spouse: ALIndividual
   - user_witness: ALIndividual
   - user_denial_witness: ALIndividual
-  - court_list: ALCourtLoader.using(file_name='docassemble.ILAO:data/sources/il_courts.xlsx')
 ---
 code: |
   ilao_easy_form_title = "Voluntary acknowledgement of parentage - VAP"
@@ -195,7 +194,7 @@ subquestion: |
   * Will have the right to have a relationship with the child, and
   * Will be responsible for supporting the child financially.
   
-  To learn more about acknowledging parentage, read ILAO's article, [**Voluntary acknowledgment of parentage basics**](https://www.illinoislegalaid.org/legal-information/parentage-basics).
+  To learn more about acknowledging parentage, see ILAO's article on [**parentage**](https://www.illinoislegalaid.org/node/31371).
 field: sees_nav_bar
 ---
 id: instructions
@@ -291,7 +290,7 @@ subquestion: |
   
   **Note:** This program can only be used if both the **{birth parent}** and the **{genetic or intended parent}** agree and can sign the forms. If the birth parent was married within 300 days of the child's birth, their spouse or ex-spouse must also agree. If the parents do not agree, you must ask a court to establish parentage. 
   
-  To learn more, read ILAO's article about [**starting a court case to establish parentage**](https://www.illinoislegalaid.org/legal-information/starting-case-parentage-court).
+  To learn more, read ILAO's article about [**starting a case for parentage in court**](https://www.illinoislegalaid.org/node/31361).
 terms:
   - birth parent: |
       The birth parent is the parent who gave birth to the child.
@@ -345,9 +344,9 @@ question: |
   % endif
 subquestion: |
   % if user_role == "birth_parent":
-  **Note:** If you are not sure ${gen_parent.name_full()} is the child's parent, you may want to get a paternity test. Read ILAO's [**article about paternity tests**](https://www.illinoislegalaid.org/legal-information/paternity-test-basics).
+  **Note:** If you are not sure ${gen_parent.name_full()} is the child's parent, you may want to get a paternity test. To learn more, see ILAO's article, [**What is a paternity test?**](https://www.illinoislegalaid.org/node/31306)
   % else:
-  **Note:** If you are not sure you are the child's parent, you may want to get a paternity test. Read ILAO's [**article about paternity tests**](https://www.illinoislegalaid.org/legal-information/paternity-test-basics).
+  **Note:** If you are not sure you are the child's parent, you may want to get a paternity test. To learn more, see ILAO's article, [**What is a paternity test?**](https://www.illinoislegalaid.org/node/31306)
   % endif
 fields:
   - no label: other_parent_relation
@@ -382,7 +381,7 @@ question: |
 subquestion: |
   You should only use this program if you are certain you know who the child's parent is.
   
-  A paternity test can help you figure out who the genetic parent of the child is. [**Read more about paternity tests**](https://www.illinoislegalaid.org/legal-information/paternity-test-basics).
+  A paternity test can help you figure out who the genetic parent of the child is. To learn more, see ILAO's article, [**What is a paternity test?**](https://www.illinoislegalaid.org/node/31306)
 buttons:
   - Exit: exit
   - Restart: restart
@@ -764,9 +763,9 @@ question: |
   % endif
 subquestion: |
   % if user_role == "birth_parent":
-  ${other_name}'s social security number can be added to the VAP. This information is optional, but it helps identify them. You can write their social security number on the form after you download it.
+  ${other_name}'s social security number can be added to the VAP. This information is optional, but it helps identify them. You can write the last four digits of their social security number on the form after you download it.
   % else:
-  Your social security number can be added to the VAP. This information is optional, but it helps identify you. You can write your social security number on the form after you download it.
+  Your social security number can be added to the VAP. This information is optional, but it helps identify you. You can write the last four digits of your social security number on the form after you download it.
   % endif
 #fields:
 # - Social security number: gen_parent_ssn
@@ -783,9 +782,9 @@ question: |
   % endif
 subquestion: |
   % if user_role == "gen_parent":
-  ${other_name}'s social security number can be added to the VAP. This information is optional, but it helps identify them. You can write their social security number on the form after you download it.
+  ${other_name}'s social security number can be added to the VAP. This information is optional, but it helps identify them. You can write the last four digits of their social security number on the form after you download it.
   % else:
-  Your social security number can be added to the VAP. This information is optional, but it helps identify you. You can write your social security number on the form after you download it.
+  Your social security number can be added to the VAP. This information is optional, but it helps identify you. You can write the last four digits of your social security number on the form after you download it.
   % endif
 ---
 id: spouse ssn
@@ -793,7 +792,7 @@ continue button field: spouse_ssn
 question: |
   About ${spouse.name_full()}'s social security number
 subquestion: |
-  ${spouse.name_full()}'s social security number can be added to the Denial of Parentage. This information is optional, but it helps identify ${spouse.name_full()}. You can write their social security number on the form after you download it.
+  ${spouse.name_full()}'s social security number can be added to the Denial of Parentage. This information is optional, but it helps identify ${spouse.name_full()}. You can write the last four digits of their social security number on the form after you download it.
 #fields:
 # - Social security number: spouse_ssn
 #   maxlength: 12
